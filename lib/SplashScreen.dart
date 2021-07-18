@@ -11,6 +11,9 @@ import 'package:kinga_app/SignUp.dart';
 import 'package:kinga_app/Utils/AppConstant.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+// Just to check bitbucket
+
+
 class SplashScreen extends StatefulWidget {
   @override
   _SplashScreenState createState() => _SplashScreenState();
