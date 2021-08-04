@@ -2,21 +2,35 @@
     package="com.vyclean.kinga_app">
 
 
-    //Permission
-
+    
     <uses-permission
-        android:name="android.permission.ACCESS_FINE_LOCATION" />
+        android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission
-        android:name="android.permission.ACCESS_COARSE_LOCATION" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.READ_CONTACTS" />
-    <uses-permission android:name="android.permission.WRITE_CONTACTS" />
+        android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+   <!-- <uses-permission android:name="android.permission.GET_ACCOUNTS"/>-->
+   <!-- <uses-permission android:name="android.permission.read_contacts" />
+    <uses-permission android:name="android.permission.read_phone_state" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />-->
+    <uses-permission android:name="android.permission.READ_CONTACTS"/>
+    <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
 
     <application
+        android:usesCleartextTraffic="true"
+        android:allowClearUserData="true"
         android:label="kinga_app"
+        android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher">
-       <meta-data android:name="com.google.android.geo.API_KEY"
+
+        <meta-data android:name="com.google.android.geo.API_KEY"
            android:value="AIzaSyAHK0oNURLIdEjB59KQXVemT0JsoJQHfg8" />
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

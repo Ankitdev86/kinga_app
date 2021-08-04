@@ -6,199 +6,199 @@ class CompletedRide extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        width: MediaQuery.of(context).size.width,
-        child: Column(
-          children: [
-            Container(
-              margin:
+          body: Container(
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: Column(
+              children: [
+                Container(
+                  margin:
                   const EdgeInsets.only(left: 0, right: 0, top: 20, bottom: 10),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  child: Column(
                     children: [
-                      IconButton(
-                          icon: Icon(
-                            Icons.menu,
-                            color: Colors.black,
-                          ),
-                          color: Colors.white,
-                          onPressed: () {
-                            Navigator.of(context).pop();
-                          }),
-                      SizedBox(
-                        width: 10,
-                      ),
-                      Column(
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Image(
-                            image: AssetImage("Assets/arrow.png"),
-                            color: Colors.black,
-                            height: 40,
-                            width: 40,
-                          ),
+                          IconButton(
+                              icon: Icon(
+                                Icons.menu,
+                                color: Colors.black,
+                              ),
+                              color: Colors.white,
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                              }),
                           SizedBox(
-                            height: 8,
+                            width: 10,
                           ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 0),
-                            child: Text(
-                              "134 KM",
-                              style:
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Image(
+                                image: AssetImage("Assets/arrow.png"),
+                                color: Colors.black,
+                                height: 40,
+                                width: 40,
+                              ),
+                              SizedBox(
+                                height: 8,
+                              ),
+                              Padding(
+                                padding: EdgeInsets.only(left: 0),
+                                child: Text(
+                                  "134 KM",
+                                  style:
                                   TextStyle(color: Colors.grey, fontSize: 15),
-                              textAlign: TextAlign.start,
-                            ),
+                                  textAlign: TextAlign.start,
+                                ),
+                              ),
+                            ],
                           ),
+                          SizedBox(width: 20),
+                          Text(
+                            "Riara Road \nNairobi Kenya",
+                            style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 20,
+                                fontWeight: FontWeight.w500),
+                          )
                         ],
                       ),
-                      SizedBox(width: 20),
-                      Text(
-                        "Riara Road \nNairobi Kenya",
-                        style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 20,
-                            fontWeight: FontWeight.w500),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Container(
+                        height: 0.8,
+                        width: MediaQuery.of(context).size.width,
+                        color: Colors.grey,
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: Row(
+                          children: [
+                            Container(
+                              height: 15,
+                              width: 15,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(7.5),
+                                  color: Colors.green),
+                            ),
+                            SizedBox(
+                              width: 20,
+                            ),
+                            Container(
+                                width: MediaQuery.of(context).size.width - 120,
+                                child: Text(
+                                  "Talisman Restaurant\n Nagong Road, Nairobi, Kenya",
+                                  maxLines: 3,
+                                  overflow: TextOverflow.ellipsis,
+                                )),
+                          ],
+                        ),
                       )
                     ],
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Container(
-                    height: 0.8,
-                    width: MediaQuery.of(context).size.width,
-                    color: Colors.grey,
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: Row(
-                      children: [
-                        Container(
-                          height: 15,
-                          width: 15,
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(7.5),
-                              color: Colors.green),
-                        ),
-                        SizedBox(
-                          width: 20,
-                        ),
-                        Container(
-                            width: MediaQuery.of(context).size.width - 120,
-                            child: Text(
-                              "Talisman Restaurant\n Nagong Road, Nairobi, Kenya",
-                              maxLines: 3,
-                              overflow: TextOverflow.ellipsis,
-                            )),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            ),
-            Stack(
-              children: [
-                Center(
-                    child: Container(
-                  height: MediaQuery.of(context).size.height / 1.35,
-                  width: MediaQuery.of(context).size.width,
-                  color: Colors.grey,
-                )),
-                Positioned(
-                  bottom: 0,
-                  left: 0,
-                  right: 0,
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    height: 150,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                      color: Colors.white,
-                    ),
-                    child: Padding(
-                      padding:
-                          const EdgeInsets.only(left: 15, right: 15, top: 15),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "sarah.DropOff",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w300,
-                                fontSize: 16),
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Container(
-                            color: Colors.grey,
-                            height: 1,
-                          ),
-                          SizedBox(
-                            height: 20,
-                          ),
-                          Container(
-                            // width: MediaQuery.of(context).size.width ,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5),
-                              color: Colors.deepOrangeAccent,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.only(left: 10),
-                                  child: Icon(
-                                    Icons.double_arrow_sharp,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                                InkWell(
-                                  child: Text(
-                                    "Complete Trip".toUpperCase(),
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w500),
-                                  ),
-                                  onTap: () {
-                                    _showBottomView(context);
-                                  },
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
                 ),
-                Positioned(
-                  right: 20,
-                  bottom: 170,
-                  child: FloatingActionButton(
-                      backgroundColor: Colors.white60,
-                      child: Icon(
-                        Icons.shield,
-                        color: Colors.black,
+                Stack(
+                  children: [
+                    Center(
+                        child: Container(
+                          height: MediaQuery.of(context).size.height / 1.35,
+                          width: MediaQuery.of(context).size.width,
+                          color: Colors.grey,
+                        )),
+                    Positioned(
+                      bottom: 0,
+                      left: 0,
+                      right: 0,
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 150,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.white,
+                        ),
+                        child: Padding(
+                          padding:
+                          const EdgeInsets.only(left: 15, right: 15, top: 15),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "sarah.DropOff",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 16),
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Container(
+                                color: Colors.grey,
+                                height: 1,
+                              ),
+                              SizedBox(
+                                height: 20,
+                              ),
+                              Container(
+                                // width: MediaQuery.of(context).size.width ,
+                                height: 50,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5),
+                                  color: Colors.deepOrangeAccent,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(left: 10),
+                                      child: Icon(
+                                        Icons.double_arrow_sharp,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                    InkWell(
+                                      child: Text(
+                                        "Complete Trip".toUpperCase(),
+                                        style: TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 17,
+                                            fontWeight: FontWeight.w500),
+                                      ),
+                                      onTap: () {
+                                        _showBottomView(context);
+                                      },
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                      onPressed: () {}),
-                )
+                    ),
+                    Positioned(
+                      right: 20,
+                      bottom: 170,
+                      child: FloatingActionButton(
+                          backgroundColor: Colors.white60,
+                          child: Icon(
+                            Icons.shield,
+                            color: Colors.black,
+                          ),
+                          onPressed: () {}),
+                    )
+                  ],
+                ),
               ],
             ),
-          ],
-        ),
-      ),
-    ));
+          ),
+        ));
   }
 
   void _showBottomView(BuildContext context) {
@@ -246,7 +246,7 @@ class CompletedRide extends StatelessWidget {
                             children: [
                               Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                MainAxisAlignment.spaceBetween,
                                 children: [
                                   Padding(
                                     padding: const EdgeInsets.only(
@@ -259,11 +259,11 @@ class CompletedRide extends StatelessWidget {
                                             onTap: () {},
                                             child: ClipOval(
                                                 child: Image(
-                                              image: new AssetImage(
-                                                  "Assets/Profile Image.png"),
-                                              width: 60,
-                                              height: 60,
-                                            )),
+                                                  image: new AssetImage(
+                                                      "Assets/Profile Image.png"),
+                                                  width: 60,
+                                                  height: 60,
+                                                )),
                                           ),
                                         ),
                                         SizedBox(
@@ -271,9 +271,9 @@ class CompletedRide extends StatelessWidget {
                                         ),
                                         Column(
                                           crossAxisAlignment:
-                                              CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                           mainAxisAlignment:
-                                              MainAxisAlignment.start,
+                                          MainAxisAlignment.start,
                                           children: [
                                             Text(
                                               "Joshua Ngugi",
@@ -283,7 +283,7 @@ class CompletedRide extends StatelessWidget {
                                                 color: Colors.black,
                                                 fontWeight: FontWeight.bold,
                                                 fontFamily:
-                                                    "EuclidCircularA-Bold",
+                                                "EuclidCircularA-Bold",
                                               ),
                                             ),
                                             Text(
@@ -293,7 +293,7 @@ class CompletedRide extends StatelessWidget {
                                                 fontSize: 13,
                                                 color: Colors.black,
                                                 fontFamily:
-                                                    "EuclidCircularA-Bold",
+                                                "EuclidCircularA-Bold",
                                               ),
                                             ),
                                           ],
@@ -348,7 +348,7 @@ class CompletedRide extends StatelessWidget {
                                       width: 30,
                                       decoration: BoxDecoration(
                                           borderRadius:
-                                              BorderRadius.circular(15),
+                                          BorderRadius.circular(15),
                                           color: Colors.blue),
                                       child: Icon(
                                         Icons.navigation_rounded,
@@ -357,7 +357,7 @@ class CompletedRide extends StatelessWidget {
                                     ),
                                     Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: [
                                         Container(
                                             margin: EdgeInsets.only(
@@ -374,14 +374,14 @@ class CompletedRide extends StatelessWidget {
                                                         children: <Widget>[
                                                           Container(
                                                             margin:
-                                                                const EdgeInsets
-                                                                        .only(
-                                                                    top: 0,
-                                                                    right: 5),
+                                                            const EdgeInsets
+                                                                .only(
+                                                                top: 0,
+                                                                right: 5),
                                                             width: MediaQuery.of(
-                                                                        context)
-                                                                    .size
-                                                                    .width -
+                                                                context)
+                                                                .size
+                                                                .width -
                                                                 120,
                                                             child: Text(
                                                               "The Language School in Kenya, Chania Ave. Nairobi, Kenya",
@@ -389,7 +389,7 @@ class CompletedRide extends StatelessWidget {
                                                               // "Country*",
                                                               style: TextStyle(
                                                                 fontFamily:
-                                                                    'EuclidCircularA-Regular',
+                                                                'EuclidCircularA-Regular',
                                                                 fontSize: 14,
                                                                 color: Colors
                                                                     .black,
@@ -412,7 +412,7 @@ class CompletedRide extends StatelessWidget {
                                               // "Country*",
                                               style: TextStyle(
                                                 fontFamily:
-                                                    'EuclidCircularA-Regular',
+                                                'EuclidCircularA-Regular',
                                                 fontSize: 10,
                                                 color: Colors.black,
                                               ),
@@ -478,7 +478,7 @@ class CompletedRide extends StatelessWidget {
                                     children: [
                                       Padding(
                                         padding:
-                                            const EdgeInsets.only(left: 10),
+                                        const EdgeInsets.only(left: 10),
                                         child: Icon(
                                           Icons.double_arrow_sharp,
                                           color: Colors.white,

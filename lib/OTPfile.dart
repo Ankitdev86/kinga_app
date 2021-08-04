@@ -20,7 +20,7 @@ import 'Utils/AppConstant.dart';
 
 class VerificationPage extends StatefulWidget {
   String Name = "", Phone = "", Email = "", LastName = "", OTP = "";
-  
+
 
   VerificationPage(this.Name, this.Phone, this.Email, this.OTP, this.LastName);
 
@@ -41,128 +41,128 @@ class _VerificationPageState extends State<VerificationPage> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      backgroundColor: Colors.white,
-      appBar: IAppBar(
-        height: 80,
-        color: Color(0xFF2C51BE),
-        child: Container(
-          margin: const EdgeInsets.only(left: 0, right: 10, top: 20),
-          child: Row(
-            children: [
-              IconButton(
-                  icon: Icon(Icons.close),
-                  color: Colors.white,
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  }),
-              SizedBox(
-                width: 10,
+          backgroundColor: Colors.white,
+          appBar: IAppBar(
+            height: 80,
+            color: Color(0xFF2C51BE),
+            child: Container(
+              margin: const EdgeInsets.only(left: 0, right: 10, top: 20),
+              child: Row(
+                children: [
+                  IconButton(
+                      icon: Icon(Icons.close),
+                      color: Colors.white,
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      }),
+                  SizedBox(
+                    width: 10,
+                  ),
+                  Text(
+                    "Verify Phone Number",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w600),
+                  )
+                ],
               ),
-              Text(
-                "Verify Phone Number",
-                style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.w600),
+            ),
+          ),
+          body: Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
+                child: Column(
+                  children: [
+                    Text(
+                      "Verify phone number",
+                      style: TextStyle(fontSize: 35),
+                      textAlign: TextAlign.left,
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "A verification code has been sent to" +
+                          widget.Phone +
+                          "\n Please enter the code below",
+                      style: TextStyle(fontSize: 15),
+                    ),
+                    SizedBox(
+                      height: 50,
+                    ),
+                    Center(
+                      child: Container(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: PinEntryTextField(
+                            showFieldAsBox: false,
+                            onSubmit: (String pin) {
+                              if (pin == widget.OTP) {
+                                getData();
+                              } else {
+                                showDialog(
+                                    context: context,
+                                    builder: (context) {
+                                      return AlertDialog(
+                                        title: Text("Error"),
+                                        content: Text('Please Enter Valid OTP'),
+                                      );
+                                    }); //end showDialog()
+                              }
+                            }, // end onSubmit
+                          ), // end PinEntryTextField()
+                        ), // end Padding()
+                      ),
+                    ),
+                    SizedBox(
+                      height: 40,
+                    ),
+                    Container(
+                        width: MediaQuery.of(context).size.width * 0.35,
+                        height: 40,
+                        margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
+                        child: Container(
+                          child: FlatButton(
+                            shape: RoundedRectangleBorder(
+                                side: BorderSide(
+                                    color: Colors.black,
+                                    width: 0,
+                                    style: BorderStyle.solid),
+                                borderRadius: BorderRadius.circular(
+                                  5,
+                                )),
+                            color: Colors.white,
+                            highlightColor: Colors.white,
+                            splashColor: Colors.blue.withAlpha(100),
+                            padding: EdgeInsets.only(
+                                top: 5, bottom: 5, left: 10, right: 10),
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => PersonalDetail(false)),
+                              );
+                            },
+                            child: Center(
+                              child: Text(
+                                "RESEND",
+                                style: TextStyle(
+                                    fontFamily: "EuclidCircularA-SemiBold",
+                                    fontSize: 14,
+                                    letterSpacing: 1,
+                                    color: Color(0xFF2C51BE)),
+                              ),
+                            ),
+                          ),
+                        )),
+                  ],
+                ),
               )
             ],
           ),
-        ),
-      ),
-      body: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 20, left: 10, right: 10),
-            child: Column(
-              children: [
-                Text(
-                  "Verify phone number",
-                  style: TextStyle(fontSize: 35),
-                  textAlign: TextAlign.left,
-                ),
-                SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  "A verification code has been sent to" +
-                      widget.Phone +
-                      "\n Please enter the code below",
-                  style: TextStyle(fontSize: 15),
-                ),
-                SizedBox(
-                  height: 50,
-                ),
-                Center(
-                  child: Container(
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: PinEntryTextField(
-                        showFieldAsBox: false,
-                        onSubmit: (String pin) {
-                          if (pin == widget.OTP) {
-                            getData();
-                          } else {
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AlertDialog(
-                                    title: Text("Error"),
-                                    content: Text('Please Enter Valid OTP'),
-                                  );
-                                }); //end showDialog()
-                          }
-                        }, // end onSubmit
-                      ), // end PinEntryTextField()
-                    ), // end Padding()
-                  ),
-                ),
-                SizedBox(
-                  height: 40,
-                ),
-                Container(
-                    width: MediaQuery.of(context).size.width * 0.35,
-                    height: 40,
-                    margin: EdgeInsets.fromLTRB(0, 0, 10, 0),
-                    child: Container(
-                      child: FlatButton(
-                        shape: RoundedRectangleBorder(
-                            side: BorderSide(
-                                color: Colors.black,
-                                width: 0,
-                                style: BorderStyle.solid),
-                            borderRadius: BorderRadius.circular(
-                              5,
-                            )),
-                        color: Colors.white,
-                        highlightColor: Colors.white,
-                        splashColor: Colors.blue.withAlpha(100),
-                        padding: EdgeInsets.only(
-                            top: 5, bottom: 5, left: 10, right: 10),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => PersonalDetail()),
-                          );
-                        },
-                        child: Center(
-                          child: Text(
-                            "RESEND",
-                            style: TextStyle(
-                                fontFamily: "EuclidCircularA-SemiBold",
-                                fontSize: 14,
-                                letterSpacing: 1,
-                                color: Color(0xFF2C51BE)),
-                          ),
-                        ),
-                      ),
-                    )),
-              ],
-            ),
-          )
-        ],
-      ),
-    ));
+        ));
   }
 
   Future getData() async {
@@ -174,7 +174,7 @@ class _VerificationPageState extends State<VerificationPage> {
       "email": widget.Email
     };
 
-    if (_progressDialog == false) {
+    if (progressDialog == false) {
       progressDialog = true;
       _progressDialog.showProgressDialog(context,
           textToBeDisplayed: 'Please wait...', dismissAfter: null);
@@ -217,27 +217,34 @@ class _VerificationPageState extends State<VerificationPage> {
             print(data);
             SHDFClass.saveSharedPrefValueString(AppConstants.UserID, responseData.user_id);
             SHDFClass.saveSharedPrefValueBoolean(AppConstants.Session, true);
+            SHDFClass.saveSharedPrefValueBoolean(AppConstants.personalDetail, false);
+            SHDFClass.saveSharedPrefValueBoolean(AppConstants.kingaProfile, false);
+            SHDFClass.saveSharedPrefValueBoolean(AppConstants.bikeDetail, false);
+            SHDFClass.saveSharedPrefValueBoolean(AppConstants.emergencyContact, false);
+            SHDFClass.saveSharedPrefValueBoolean(AppConstants.collegueContact, false);
+
+            // SHDFClass.saveSharedPrefValueBoolean(AppConstants.Session, true);
             setState(() {});
             Alert(
-              context: context,
-              title: "SUCCESS",
-              desc: "Signup Successfully.",
-              image: Image.asset("Assets/success.png"),
-              buttons: [
-                DialogButton(
-                  child: Text(
-                    "OK",
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+                context: context,
+                title: "SUCCESS",
+                desc: "Signup Successfully.",
+                image: Image.asset("Assets/success.png"),
+                buttons: [
+                  DialogButton(
+                    child: Text(
+                      "OK",
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                    onPressed: () => Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => PersonalDetail(false)),
+                    ),
+                    color: Color(0xFF2C51BE),
+                    radius: BorderRadius.circular(5.0),
                   ),
-                  onPressed: () => Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => PersonalDetail()),
-                  ),
-                  color: Color(0xFF2C51BE),
-                  radius: BorderRadius.circular(5.0),
-                ),
-              ]
+                ]
             ).show();
 
           } else {

@@ -2,10 +2,12 @@ import 'package:email_validator/email_validator.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:kinga_app/Appbar.dart';
+import 'package:kinga_app/BikeDetailScreen.dart';
 import 'package:kinga_app/DashboardScreen.dart';
 import 'package:kinga_app/Data/API.dart';
 import 'package:kinga_app/Data/SignUpResponse.dart';
 import 'package:kinga_app/OnboardingScreen.dart';
+import 'package:kinga_app/PersnolDetail.dart';
 import 'package:kinga_app/SignUp.dart';
 import 'package:kinga_app/Utils/AppConstant.dart';
 import 'package:kinga_app/Utils/CustomAlertDialogue.dart';
@@ -107,12 +109,12 @@ class _LoginState extends State<Login> {
                             height: 45,
                             child: Center(
                                 child: Text(
-                              "Sign In",
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.w500),
-                            )),
+                                  "Sign In",
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.w500),
+                                )),
                             width: MediaQuery.of(context).size.width - 20,
                           ),
                         ),
@@ -138,21 +140,21 @@ class _LoginState extends State<Login> {
                           alignment: Alignment.bottomCenter,
                           child: RichText(
                               text: TextSpan(children: <TextSpan>[
-                            TextSpan(
-                                text: 'Dont have an account? ',
-                                style: TextStyle(color: Colors.black)),
-                            TextSpan(
-                                text: 'Register',
-                                style: TextStyle(color: Colors.blueAccent),
-                                recognizer: TapGestureRecognizer()
-                                  ..onTap = () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => SignUpPage()),
-                                    );
-                                  }),
-                          ])),
+                                TextSpan(
+                                    text: 'Dont have an account? ',
+                                    style: TextStyle(color: Colors.black)),
+                                TextSpan(
+                                    text: 'Register',
+                                    style: TextStyle(color: Colors.blueAccent),
+                                    recognizer: TapGestureRecognizer()
+                                      ..onTap = () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) => SignUpPage()),
+                                        );
+                                      }),
+                              ])),
                         ))
                   ],
                 ))),
@@ -199,7 +201,7 @@ class _LoginState extends State<Login> {
       "password": passwordTF.text
     };
 
-    if (_progressDialog == false) {
+    if (progressDialog == false) {
       progressDialog = true;
       _progressDialog.showProgressDialog(context,
           textToBeDisplayed: 'Please wait...', dismissAfter: null);
@@ -220,12 +222,13 @@ class _LoginState extends State<Login> {
         print(response);
         _progressDialog.dismissProgressDialog(context);
         progressDialog = false;
-
+        print("Status Code..................");
+        print(statusCode);
         if (statusCode < 200 || statusCode > 400 || json == null) {
           showDialog(
               context: context,
               builder: (BuildContext context1) => OKDialogBox(
-                title: 'Check your internet connections and settings !',
+                title: response.statusCode.toString(),
                 description: "",
                 my_context: context,
               ));
@@ -242,7 +245,12 @@ class _LoginState extends State<Login> {
             print(data);
             SHDFClass.saveSharedPrefValueString(AppConstants.UserID, responseData.user_id);
             SHDFClass.saveSharedPrefValueBoolean(AppConstants.Session, true);
-            setState(() {});
+            setState(() {
+              Map map = {
+                "user_id": responseData.user_id,
+              };
+              checkUerStatus(API.checkuserStatus, map, context);
+            });
 
           } else {
             showDialog(
@@ -262,7 +270,84 @@ class _LoginState extends State<Login> {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: 'Check your internet connections and settings !',
+            title: e.toString(),
+            description: "",
+            my_context: context,
+          ));
+    }
+    return responseInternet;
+
+  }
+
+  Future<http.Response> checkUerStatus(
+      String url, Map jsonMap, BuildContext context) async {
+    var body = json.encode(jsonMap);
+    var responseInternet;
+    try {
+      responseInternet = await http
+          .post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body)
+          .then((http.Response response) {
+        final int statusCode = response.statusCode;
+        print(response);
+        _progressDialog.dismissProgressDialog(context);
+        progressDialog = false;
+
+        if (statusCode < 200 || statusCode > 400 || json == null) {
+          showDialog(
+              context: context,
+              builder: (BuildContext context1) => OKDialogBox(
+                title: response.statusCode.toString(),
+                description: "",
+                my_context: context,
+              ));
+
+          throw new Exception("Error while fetching data");
+        } else {
+          print(response.body);
+          UserStatusResponse responseData = new UserStatusResponse();
+          responseData.fromJson(json.decode(response.body));
+          Map<String, dynamic> data = responseData.toJson();
+          if (responseData.status == "1") {
+            _progressDialog.dismissProgressDialog(context);
+            progressDialog = false;
+            print(data);
+            SHDFClass.saveSharedPrefValueString(AppConstants.UserID, responseData.user_id);
+            SHDFClass.saveSharedPrefValueBoolean(AppConstants.Session, true);
+            SHDFClass.saveSharedPrefValueBoolean(AppConstants.personalDetail, responseData.personal_profile_status);
+            SHDFClass.saveSharedPrefValueBoolean(AppConstants.kingaProfile, responseData.kingaPofile);
+            SHDFClass.saveSharedPrefValueBoolean(AppConstants.bikeDetail, responseData.bike_profile_status);
+            SHDFClass.saveSharedPrefValueBoolean(AppConstants.emergencyContact, responseData.next_of_kin_status);
+            SHDFClass.saveSharedPrefValueBoolean(AppConstants.emergencyContact, responseData.colleague_status);
+
+            print(responseData.kingaPofile);
+
+            setState(() {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => DashboardPage()),
+              );
+            });
+
+          } else {
+            showDialog(
+                context: context,
+                builder: (BuildContext context1) => OKDialogBox(
+                  title: '' + responseData.msg,
+                  description: "",
+                  my_context: context,
+                ));
+          }
+        }
+      });
+    } catch (e) {
+      _progressDialog.dismissProgressDialog(context);
+      progressDialog = false;
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context1) => OKDialogBox(
+            title: e.toString(),
             description: "",
             my_context: context,
           ));

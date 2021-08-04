@@ -1,16 +1,48 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:kinga_app/Data/CustomContact.dart';
+import 'package:kinga_app/Data/EmergencyContactResponse.dart';
 
 
 BuildContext context_global;
 
 bool progressDialog = false;
 
-List<CustomContact> kinContact;
-List<CustomContact> collegueContact;
+List<Colleague> kinContact;
+List<Colleague> collegueContact;
+File uploadedImage;
+LatLng location_data;
 
+bool isBikeDetail = false;
+String numberPlate;
+String model;
+String color;
+String year;
+
+String selectedgender;
+String selectedsendDOB;
+String dateOfBirth;
+String selectedCounty;
+String selectedSubcounty;
+String selectedsacco;
+String selectedbak;
+String selectedpassword;
+String selectedconPassword;
+
+bool iskinContactList;
+
+List<CustomContact> selectedkinContact;
+List<CustomContact> selectedcollegueContact;
+
+List<String> countyArray;
+List<String> subCountyArray;
+List<String> saccoList;
+
+
+
+const kGoogleApiKey = "AIzaSyAHK0oNURLIdEjB59KQXVemT0JsoJQHfg8";
 
 List yearArray = ["2021",
   "2020","2019","2018","2017","2016","2015","2014","2013","2012","2011",

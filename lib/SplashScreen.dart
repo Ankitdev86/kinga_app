@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:kinga_app/BikeDetailScreen.dart';
+import 'package:kinga_app/DashboardScreen.dart';
 import 'package:kinga_app/EmergencyContact.dart';
 import 'package:kinga_app/KingaProfile.dart';
 import 'package:kinga_app/Login.dart';
@@ -114,7 +115,7 @@ class _SplashScreenState extends State<SplashScreen> {
       Future.delayed(Duration(seconds: 3), () {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => BikeDetail()),
+          MaterialPageRoute(builder: (context) => DashboardPage()),
         );
       });
     } else {

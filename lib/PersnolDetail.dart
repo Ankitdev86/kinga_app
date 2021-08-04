@@ -1,8 +1,11 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:kinga_app/BikeDetailScreen.dart';
 import 'package:kinga_app/Data/API.dart';
+import 'package:kinga_app/Data/CountyResponse.dart';
+import 'package:kinga_app/Data/PersonaldetailResponse.dart';
 import 'package:kinga_app/Data/SignUpResponse.dart';
 import 'package:kinga_app/KingaProfile.dart';
 import 'package:kinga_app/PhotoReqScreen.dart';
@@ -18,6 +21,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'Appbar.dart';
 
 class PersonalDetail extends StatefulWidget {
+
+  bool isUpdate;
+
+  PersonalDetail(this.isUpdate);
+
   @override
   _PersonalDetailState createState() => _PersonalDetailState();
 }
@@ -30,15 +38,15 @@ class _PersonalDetailState extends State<PersonalDetail> {
   TextEditingController confPasswordTF = TextEditingController();
   ProgressDialog _progressDialog = ProgressDialog();
 
-  List<String> genderList = ['Male', 'Female']; // Option 2
-  List<String> countyList = ['County1', 'County2', "County3"];
-  List<String> subCountyList = ['SubCounty1', 'SubCounty2', "SubCounty3"];
-  List<String> saccoList = ['Sacco1', 'Sacco2', "Sacco3"];
+  List<String> genderList = ['Male', 'Female', 'Other']; // Option 2
+  List<String> countyList = [];
+  List<String> subCountyList = [];
+  List<String> saccoList = [];
 
   TextStyle placeholderStyle =
-      TextStyle(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w500);
+  TextStyle(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w500);
   TextStyle selectedValueStyle =
-      TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400);
+  TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400);
 
   String gender; // Option 2
   String county;
@@ -46,6 +54,55 @@ class _PersonalDetailState extends State<PersonalDetail> {
   String sacco;
   String showDate;
   String sendDOB;
+  String profileImageBase64 = "";
+  String networkimage;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+
+    print(API.get_county_list);
+    if (dateOfBirth != null) {
+      showDate = dateOfBirth;
+    }
+
+    if (selectedgender != null) {
+      gender = selectedgender;
+    }
+
+    if (selectedCounty != null) {
+      county = selectedCounty;
+    }
+
+    if (selectedSubcounty != null) {
+      subCounty = selectedSubcounty;
+    }
+
+    if (selectedsacco != null) {
+      sacco = selectedsacco;
+    }
+
+    if (dateOfBirth != null) {
+      showDate = dateOfBirth;
+      sendDOB = selectedsendDOB;
+    }
+
+    bakTF.text = selectedbak;
+    passwordTF.text = selectedpassword;
+    confPasswordTF.text = selectedconPassword;
+
+    if (widget.isUpdate) {
+      sendPersonalDetail();
+    } else {
+      getCountyList(API.get_county_list, context);
+      getSubCountyList(API.get_sub_county_list, context);
+      getSaccoList(API.get_sacco_list, context);
+
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -116,27 +173,79 @@ class _PersonalDetailState extends State<PersonalDetail> {
                         ),
                         Row(
                           children: [
-                            Container(
-                              height: 60,
-                              width: 60,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(30),
-                                  color: Color(0xFFECECEC)),
-                              child: IconButton(
-                                  icon: Icon(
-                                    Icons.camera_alt,
-                                    color: Colors.black,
-                                    size: 30,
-                                  ),
-                                  onPressed: () {
+                            uploadedImage == null ? Container(
+                                height: 60,
+                                width: 60,
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(30),
+                                    color: Color(0xFFECECEC)),
+                                child: networkimage == null || networkimage.isEmpty ? IconButton(
+                                    icon: Icon(
+                                      Icons.camera_alt,
+                                      color: Colors.black,
+                                      size: 30,
+                                    ),
+                                    onPressed: () {
+                                      assignValue();
+                                      isBikeDetail = false;
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => PhotoReqScreen()),
+                                      );
+                                    }) :
+                                InkWell(
+                                  child: Container(
+                                      height : 60,width:60,
+                                      // margin: EdgeInsets.only(top: 50,left: 10,right: 10),
+                                      decoration: new BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          border: Border.all(
+                                            color: Colors.blueGrey[100], //                   <--- border color
+                                            width: 2,
+                                          ),
+                                          image: new DecorationImage(
+                                              fit: BoxFit.fill,
+                                              image: NetworkImage(networkimage),
+                                          )
+                                      )),
+                                  onTap: () {
+                                    assignValue();
+                                    isBikeDetail = false;
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
-                                          builder: (context) =>
-                                              PhotoReqScreen()),
+                                          builder: (context) => PhotoReqScreen()),
                                     );
-                                  }),
+                                  },
+                                )
+
+                            ) : InkWell(
+                              child: Container(
+                                  height : 60,width:60,
+                                  // margin: EdgeInsets.only(top: 50,left: 10,right: 10),
+                                  decoration: new BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      border: Border.all(
+                                        color: Colors.blueGrey[100], //                   <--- border color
+                                        width: 2,
+                                      ),
+                                      image: new DecorationImage(
+                                          fit: BoxFit.fill,
+                                          image:  FileImage(uploadedImage)
+                                      )
+                                  )),
+                              onTap: () {
+                                assignValue();
+                                isBikeDetail = false;
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => PhotoReqScreen()),
+                                );
+                              },
                             ),
+
                             SizedBox(
                               width: 30,
                             ),
@@ -157,7 +266,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
                             children: [
                               Padding(
                                 padding:
-                                    const EdgeInsets.only(left: 0, right: 10),
+                                const EdgeInsets.only(left: 0, right: 10),
                                 child: DropdownButton(
                                   onChanged: (newValue) {
                                     setState(() {
@@ -175,10 +284,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
                                     color: Colors.grey,
                                   ),
                                   iconSize: 25,
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500),
+                                  style: gender == null ? placeholderStyle : selectedValueStyle,
                                   value: gender,
                                   hint: Text(
                                     "Gender",
@@ -206,7 +312,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
                               InkWell(
                                 child: Row(
                                   mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                  MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
                                       showDate == null
@@ -240,7 +346,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
                               ),
                               Padding(
                                 padding:
-                                    const EdgeInsets.only(left: 0, right: 10),
+                                const EdgeInsets.only(left: 0, right: 10),
                                 child: DropdownButton(
                                   onChanged: (newValue) {
                                     setState(() {
@@ -265,10 +371,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
                                   value: county,
                                   hint: Text(
                                     "County",
-                                    style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500),
+                                    style: county == null ? placeholderStyle : selectedValueStyle,
                                   ),
                                   isExpanded: true,
                                   underline: SizedBox(
@@ -288,7 +391,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
                               ),
                               Padding(
                                 padding:
-                                    const EdgeInsets.only(left: 0, right: 10),
+                                const EdgeInsets.only(left: 0, right: 10),
                                 child: DropdownButton(
                                   onChanged: (newValue) {
                                     setState(() {
@@ -313,10 +416,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
                                   value: subCounty,
                                   hint: Text(
                                     "SubCounty",
-                                    style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500),
+                                    style: county == null ? placeholderStyle : selectedValueStyle,
                                   ),
                                   isExpanded: true,
                                   underline: SizedBox(
@@ -336,7 +436,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
                               ),
                               Padding(
                                 padding:
-                                    const EdgeInsets.only(left: 0, right: 10),
+                                const EdgeInsets.only(left: 0, right: 10),
                                 child: DropdownButton(
                                   onChanged: (newValue) {
                                     setState(() {
@@ -361,10 +461,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
                                   value: sacco,
                                   hint: Text(
                                     "Sacco",
-                                    style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500),
+                                    style: sacco == null ? placeholderStyle : selectedValueStyle,
                                   ),
                                   isExpanded: true,
                                   underline: SizedBox(
@@ -384,9 +481,9 @@ class _PersonalDetailState extends State<PersonalDetail> {
                               ),
                               Padding(
                                 padding:
-                                    const EdgeInsets.only(left: 0, right: 10),
+                                const EdgeInsets.only(left: 0, right: 10),
                                 child: TextField(
-                                    // keyboardType: TextInputType.emailAddress,
+                                  // keyboardType: TextInputType.emailAddress,
                                     controller: bakTF,
                                     decoration: InputDecoration(
                                       hintText: 'Bak#',
@@ -401,7 +498,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
                               ),
                               Padding(
                                 padding:
-                                    const EdgeInsets.only(left: 0, right: 10),
+                                const EdgeInsets.only(left: 0, right: 10),
                                 child: TextField(
                                   controller: passwordTF,
                                   obscureText: true,
@@ -418,7 +515,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
                               ),
                               Padding(
                                 padding:
-                                    const EdgeInsets.only(left: 0, right: 10),
+                                const EdgeInsets.only(left: 0, right: 10),
                                 child: TextField(
                                   controller: confPasswordTF,
                                   obscureText: true,
@@ -448,14 +545,18 @@ class _PersonalDetailState extends State<PersonalDetail> {
                   color: Color(0xFF2C51BE),
                   child: TextButton(
                     child: Text(
-                      "NEXT",
+                      widget.isUpdate == true ? "UPDATE" : "NEXT",
                       style: TextStyle(
                           color: Colors.white,
                           fontWeight: FontWeight.w600,
                           fontSize: 17),
                     ),
                     onPressed: () {
-                      checkValidation();
+                      if (widget.isUpdate) {
+                        checkUpdateValidation();
+                      } else {
+                        checkValidation();
+                      }
                     },
                   ),
                 ))
@@ -463,6 +564,39 @@ class _PersonalDetailState extends State<PersonalDetail> {
         ),
       ),
     );
+
+  }
+
+  void assignValue() {
+    if (showDate != null) {
+      dateOfBirth = showDate;
+    }
+
+    if (gender != null) {
+      selectedgender = gender;
+    }
+
+    if (county != null) {
+      selectedCounty = county;
+    }
+
+    if (subCounty != null) {
+      selectedSubcounty = subCounty;
+    }
+
+    if (sacco != null) {
+      selectedsacco = sacco;
+    }
+
+    if (showDate != null) {
+      dateOfBirth = showDate;
+      selectedsendDOB = sendDOB;
+    }
+
+    selectedbak = bakTF.text;
+    selectedpassword = passwordTF.text;
+    selectedconPassword = confPasswordTF.text;
+
 
   }
 
@@ -491,6 +625,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
           strday = "0" + strday;
         }
 
+
         // mm/dd/yyyy
         //2000-12-12
         showDate = strmonth + "/" + strday + "/" + picked.year.toString();
@@ -506,74 +641,136 @@ class _PersonalDetailState extends State<PersonalDetail> {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-                title: 'Please Enter Email Address',
-                description: "",
-                my_context: context,
-              ));
+            title: 'Please Enter Email Address',
+            description: "",
+            my_context: context,
+          ));
     } else if (showDate == null || showDate.length == 0) {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-                title: 'Please Select Date Of Birth',
-                description: "",
-                my_context: context,
-              ));
+            title: 'Please Select Date Of Birth',
+            description: "",
+            my_context: context,
+          ));
     } else if (county == null || county.length == 0) {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-                title: 'Please Select County',
-                description: "",
-                my_context: context,
-              ));
+            title: 'Please Select County',
+            description: "",
+            my_context: context,
+          ));
     } else if (subCounty == null || subCounty.length == 0) {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-                title: 'Please Select Subcounty',
-                description: "",
-                my_context: context,
-              ));
+            title: 'Please Select Subcounty',
+            description: "",
+            my_context: context,
+          ));
     } else if (sacco == null || sacco.length == 0) {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-                title: 'Please Select Sacco',
-                description: "",
-                my_context: context,
-              ));
+            title: 'Please Select Sacco',
+            description: "",
+            my_context: context,
+          ));
     } else if (bakTF.text.length == 0) {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-                title: 'Please Enter Bak',
-                description: "",
-                my_context: context,
-              ));
+            title: 'Please Enter Bak',
+            description: "",
+            my_context: context,
+          ));
     } else if (passwordTF.text.length == 0) {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-                title: 'Please Enter Password',
-                description: "",
-                my_context: context,
-              ));
+            title: 'Please Enter Password',
+            description: "",
+            my_context: context,
+          ));
     } else if (passwordTF.text.length < 6) {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-                title: 'Password Length Must Be Greater Than 6 Digit',
-                description: "",
-                my_context: context,
-              ));
+            title: 'Password Length Must Be Greater Than 6 Digit',
+            description: "",
+            my_context: context,
+          ));
     } else if (passwordTF.text != confPasswordTF.text) {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-                title: 'Password Do Not Match',
-                description: "",
-                my_context: context,
-              ));
+            title: 'Password Do Not Match',
+            description: "",
+            my_context: context,
+          ));
+    } else if (uploadedImage == null) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context1) => OKDialogBox(
+            title: 'Please Upload Profile image',
+            description: "",
+            my_context: context,
+          ));
+    } else {
+      getData();
+    }
+  }
+
+  void checkUpdateValidation() {
+    if (gender == null || gender.length == 0) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context1) => OKDialogBox(
+            title: 'Please Enter Email Address',
+            description: "",
+            my_context: context,
+          ));
+    } else if (showDate == null || showDate.length == 0) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context1) => OKDialogBox(
+            title: 'Please Select Date Of Birth',
+            description: "",
+            my_context: context,
+          ));
+    } else if (county == null || county.length == 0) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context1) => OKDialogBox(
+            title: 'Please Select County',
+            description: "",
+            my_context: context,
+          ));
+    } else if (subCounty == null || subCounty.length == 0) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context1) => OKDialogBox(
+            title: 'Please Select Subcounty',
+            description: "",
+            my_context: context,
+          ));
+    } else if (sacco == null || sacco.length == 0) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context1) => OKDialogBox(
+            title: 'Please Select Sacco',
+            description: "",
+            my_context: context,
+          ));
+    } else if (bakTF.text.length == 0) {
+      showDialog(
+          context: context,
+          builder: (BuildContext context1) => OKDialogBox(
+            title: 'Please Enter Bak',
+            description: "",
+            my_context: context,
+          ));
     } else {
       getData();
     }
@@ -582,20 +779,43 @@ class _PersonalDetailState extends State<PersonalDetail> {
   Future getData() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String user_id = preferences.getString(AppConstants.UserID);
+     Map map;
+    if (widget.isUpdate) {
+      map = {
+        "user_id": user_id,
+        "county": county,
+        "sub_county": subCounty,
+        "sacco": sacco,
+        "bak_no": bakTF.text,
+        "password": passwordTF.text,
+        "gender": gender,
+        "birth_date": sendDOB,
+        "profile_img": ""
+      };
 
-    Map map = {
-      "user_id": user_id,
-      "county": county,
-      "sub_county": subCounty,
-      "sacco": sacco,
-      "bak_no": bakTF.text,
-      "password": passwordTF.text,
-      "gender": gender,
-      "birth_date": sendDOB,
-      "profile_img": ""
-    };
+    } else {
+      List<int> imageBytes = uploadedImage.readAsBytesSync();
+      print(imageBytes);
+      String base64ImageTemp = base64Encode(imageBytes);
+      profileImageBase64 = base64ImageTemp;
 
-    if (_progressDialog == false) {
+      map = {
+        "user_id": user_id,
+        "county": county,
+        "sub_county": subCounty,
+        "sacco": sacco,
+        "bak_no": bakTF.text,
+        "password": passwordTF.text,
+        "gender": gender,
+        "birth_date": sendDOB,
+        "profile_img": profileImageBase64
+      };
+
+
+    }
+
+
+    if (progressDialog == false) {
       progressDialog = true;
       _progressDialog.showProgressDialog(context,
           textToBeDisplayed: 'Please wait...', dismissAfter: null);
@@ -611,7 +831,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
     try {
       responseInternet = await http
           .post(Uri.parse(url),
-              headers: {"Content-Type": "application/json"}, body: body)
+          headers: {"Content-Type": "application/json"}, body: body)
           .then((http.Response response) {
         final int statusCode = response.statusCode;
         print(response);
@@ -622,10 +842,10 @@ class _PersonalDetailState extends State<PersonalDetail> {
           showDialog(
               context: context,
               builder: (BuildContext context1) => OKDialogBox(
-                    title: 'Check your internet connections and settings !',
-                    description: "",
-                    my_context: context,
-                  ));
+                title: 'Check your internet connections and settings !',
+                description: "",
+                my_context: context,
+              ));
 
           throw new Exception("Error while fetching data");
         } else {
@@ -637,13 +857,12 @@ class _PersonalDetailState extends State<PersonalDetail> {
             _progressDialog.dismissProgressDialog(context);
             progressDialog = false;
             print(data);
-            SHDFClass.saveSharedPrefValueString(
-                AppConstants.UserID, responseData.user_id);
-            SHDFClass.saveSharedPrefValueBoolean(AppConstants.Session, true);
+            SHDFClass.saveSharedPrefValueBoolean(AppConstants.personalDetail, true);
+            uploadedImage = null;
             Alert(
                 context: context,
                 title: "SUCCESS",
-                desc: "Personal Detail Added Successfully.",
+                desc: widget.isUpdate == true ? "Personal Detail Updated Successfully." : "Personal Detail Added Successfully.",
                 image: Image.asset("Assets/success.png"),
                 buttons: [
                   DialogButton(
@@ -651,10 +870,33 @@ class _PersonalDetailState extends State<PersonalDetail> {
                       "OK",
                       style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
-                    onPressed: () => Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => BikeDetail()),
-                    ),
+                    onPressed: () async {
+                      SharedPreferences preferences = await SharedPreferences.getInstance();
+                      bool bikeDetail = preferences.getBool(AppConstants.bikeDetail);
+
+                      if (widget.isUpdate) {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                      } else {
+                        if (bikeDetail == true) {
+                          Navigator.of(context).pop();
+                        } else {
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(builder: (context) => BikeDetail(false)));
+
+                        }
+
+                      }
+
+
+
+                    },
+
+                    // => Navigator.pushReplacement(
+                    //   context,
+                    //   MaterialPageRoute(builder: (context) => BikeDetail()),
+                    // ),
                     color: Color(0xFF2C51BE),
                     radius: BorderRadius.circular(5.0),
                   ),
@@ -664,10 +906,10 @@ class _PersonalDetailState extends State<PersonalDetail> {
             showDialog(
                 context: context,
                 builder: (BuildContext context1) => OKDialogBox(
-                      title: '' + responseData.msg,
-                      description: "",
-                      my_context: context,
-                    ));
+                  title: '' + responseData.msg,
+                  description: "",
+                  my_context: context,
+                ));
           }
         }
       });
@@ -678,11 +920,308 @@ class _PersonalDetailState extends State<PersonalDetail> {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
+            title: 'Check your internet connections and settings !',
+            description: "",
+            my_context: context,
+          ));
+    }
+    return responseInternet;
+  }
+
+
+  Future<http.Response> getCountyList(
+      String url, BuildContext context) async {
+    var responseInternet;
+    try {
+      responseInternet = await http
+          .get(Uri.parse(url))
+          .then((http.Response response) {
+        final int statusCode = response.statusCode;
+        print(response);
+        _progressDialog.dismissProgressDialog(context);
+        progressDialog = false;
+
+        if (statusCode < 200 || statusCode > 400 || json == null) {
+          showDialog(
+              context: context,
+              builder: (BuildContext context1) => OKDialogBox(
                 title: 'Check your internet connections and settings !',
                 description: "",
                 my_context: context,
               ));
+
+          throw new Exception("Error while fetching data");
+        } else {
+          print(response.body);
+          CountyListResponse responseData = new CountyListResponse();
+          responseData.fromJson(json.decode(response.body));
+          Map<String, dynamic> data = responseData.toJson();
+          if (responseData.status == "1") {
+            _progressDialog.dismissProgressDialog(context);
+            progressDialog = false;
+            print(data);
+            setState(() {
+              countyList.clear();
+              countyList = responseData.county_list;
+              print("CCCCOOOOOOUUUUUNNNNNNTTTTTYYYYYYY");
+              print(countyList);
+            });
+          } else {
+            showDialog(
+                context: context,
+                builder: (BuildContext context1) => OKDialogBox(
+                  title: '' + responseData.msg,
+                  description: "",
+                  my_context: context,
+                ));
+          }
+        }
+      });
+    } catch (e) {
+      _progressDialog.dismissProgressDialog(context);
+      progressDialog = false;
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context1) => OKDialogBox(
+            title: e.toString(),
+            description: "",
+            my_context: context,
+          ));
     }
     return responseInternet;
   }
+
+  Future<http.Response> getSubCountyList(
+      String url, BuildContext context) async {
+    var responseInternet;
+    try {
+      responseInternet = await http
+          .get(Uri.parse(url))
+          .then((http.Response response) {
+        final int statusCode = response.statusCode;
+        print(response);
+        _progressDialog.dismissProgressDialog(context);
+        progressDialog = false;
+
+        if (statusCode < 200 || statusCode > 400 || json == null) {
+          showDialog(
+              context: context,
+              builder: (BuildContext context1) => OKDialogBox(
+                title: 'Check your internet connections and settings !',
+                description: "",
+                my_context: context,
+              ));
+
+          throw new Exception("Error while fetching data");
+        } else {
+          print(response.body);
+          SubCountyListResponse responseData = new SubCountyListResponse();
+          responseData.fromJson(json.decode(response.body));
+          Map<String, dynamic> data = responseData.toJson();
+          if (responseData.status == "1") {
+            _progressDialog.dismissProgressDialog(context);
+            progressDialog = false;
+            print(data);
+            setState(() {
+              subCountyList.clear();
+              subCountyList = responseData.sub_county_list;
+              print("SSSSSUUUUUBBBBBCCCCOOOOOOUUUUUNNNNNNTTTTTYYYYYYY");
+              print(subCountyList);
+
+            });
+          } else {
+            showDialog(
+                context: context,
+                builder: (BuildContext context1) => OKDialogBox(
+                  title: '' + responseData.msg,
+                  description: "",
+                  my_context: context,
+                ));
+          }
+        }
+      });
+    } catch (e) {
+      _progressDialog.dismissProgressDialog(context);
+      progressDialog = false;
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context1) => OKDialogBox(
+            title: e.toString(),
+            description: "",
+            my_context: context,
+          ));
+    }
+    return responseInternet;
+  }
+
+  Future<http.Response> getSaccoList(
+      String url, BuildContext context) async {
+    var responseInternet;
+    try {
+      responseInternet = await http
+          .get(Uri.parse(url))
+          .then((http.Response response) {
+        final int statusCode = response.statusCode;
+        print(response);
+        _progressDialog.dismissProgressDialog(context);
+        progressDialog = false;
+
+        if (statusCode < 200 || statusCode > 400 || json == null) {
+          showDialog(
+              context: context,
+              builder: (BuildContext context1) => OKDialogBox(
+                title: 'Check your internet connections and settings !',
+                description: "",
+                my_context: context,
+              ));
+
+          throw new Exception("Error while fetching data");
+        } else {
+          print(response.body);
+          SaccoListREsponse responseData = new SaccoListREsponse();
+          responseData.fromJson(json.decode(response.body));
+          Map<String, dynamic> data = responseData.toJson();
+          if (responseData.status == "1") {
+            _progressDialog.dismissProgressDialog(context);
+            progressDialog = false;
+            print(data);
+            setState(() {
+              saccoList = responseData.sacco_list;
+              print("SSSSAAAAACCCCCCOOOOOOOO");
+              print(saccoList);
+            });
+          } else {
+            showDialog(
+                context: context,
+                builder: (BuildContext context1) => OKDialogBox(
+                  title: '' + responseData.msg,
+                  description: "",
+                  my_context: context,
+                ));
+          }
+        }
+      });
+    } catch (e) {
+      _progressDialog.dismissProgressDialog(context);
+      progressDialog = false;
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context1) => OKDialogBox(
+            title: e.toString(),
+            description: "",
+            my_context: context,
+          ));
+    }
+    return responseInternet;
+  }
+
+  Future sendPersonalDetail() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String user_id = preferences.getString(AppConstants.UserID);
+    print('Userrrrrrrrrrr');
+    print(API.get_kinga_profile);
+
+    Map map = {
+      "user_id": user_id,
+    };
+
+    if (progressDialog == false) {
+
+      progressDialog = true;
+      _progressDialog.showProgressDialog(context,
+          textToBeDisplayed: 'Please wait...', dismissAfter: null);
+    }
+
+    await getPersonalProfile(API.get_personal_details, map, context);
+  }
+
+  Future<http.Response> getPersonalProfile(
+      String url, Map jsonMap, BuildContext context) async {
+    var body = json.encode(jsonMap);
+    var responseInternet;
+    try {
+      responseInternet = await http
+          .post(Uri.parse(url),
+          headers: {"Content-Type": "application/json"}, body: body)
+          .then((http.Response response) {
+        final int statusCode = response.statusCode;
+        print(response);
+        _progressDialog.dismissProgressDialog(context);
+        progressDialog = false;
+
+        if (statusCode < 200 || statusCode > 400 || json == null) {
+          print(statusCode);
+          showDialog(
+              context: context,
+              builder: (BuildContext context1) => OKDialogBox(
+                title: 'Check your internet connections and settings !',
+                description: "",
+                my_context: context,
+              ));
+
+          throw new Exception("Error while fetching data");
+        } else {
+          print(response.body);
+          GetPersonalData responseData = new GetPersonalData();
+          responseData.fromJson(json.decode(response.body));
+          print(response.body);
+          Map<String, dynamic> data = responseData.toJson();
+          if (responseData.status == "1") {
+            _progressDialog.dismissProgressDialog(context);
+            progressDialog = false;
+            setState(() {
+              getCountyList(API.get_county_list, context);
+              getSubCountyList(API.get_sub_county_list, context);
+              getSaccoList(API.get_sacco_list, context);
+
+              gender = responseData.personalDetails.gender;
+              sendDOB = responseData.personalDetails.birthDate;
+              county = responseData.personalDetails.county;
+              subCounty = responseData.personalDetails.subCounty;
+              sacco = responseData.personalDetails.sacco;
+              bakTF.text = responseData.personalDetails.bakNo;
+              // passwordTF.text = responseData.personalDetails.pa;
+              networkimage = API.baseUrl + responseData.personalDetails.profileImg;
+              if (!responseData.personalDetails.birthDate.isEmpty) {
+                DateTime parseDate =
+                new DateFormat("yyyy-MM-dd").parse(sendDOB);
+                var inputDate = DateTime.parse(parseDate.toString());
+                var outputFormat = DateFormat('dd/MM/yyyy');
+                var outputDate = outputFormat.format(inputDate);
+                showDate = outputDate;
+                print(outputDate);
+
+              }
+
+            });
+          } else {
+            showDialog(
+                context: context,
+                builder: (BuildContext context1) => OKDialogBox(
+                  title: '' + responseData.msg,
+                  description: "",
+                  my_context: context,
+                ));
+          }
+        }
+      });
+    } catch (e) {
+      _progressDialog.dismissProgressDialog(context);
+      progressDialog = false;
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context1) => OKDialogBox(
+            title: e.toString(),
+            description: "",
+            my_context: context,
+          ));
+    }
+    return responseInternet;
+  }
+
+
 }
