@@ -26,4 +26,6 @@ class API {
   static const String get_model_list = baseUrl + "/get_model_list/";
   static const String getEmergencyDetails = baseUrl + "/emergency_contact_details/";
   static const String checkUserEmail = baseUrl + "/check_email_exists/";
+  static const String getUserNameImage = baseUrl + "/get_user_name_image/";
+  static const String startTrip = baseUrl + "/start_trip/";
 }

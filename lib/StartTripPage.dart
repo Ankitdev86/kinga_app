@@ -19,11 +19,15 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class StartTripPage extends StatefulWidget {
+  final String selectedAddress;
+
+  const StartTripPage({Key key, this.selectedAddress}) : super(key: key);
+
   @override
-  _LoginState createState() => _LoginState();
+  StartTripPageState createState() => StartTripPageState();
 }
 
-class _LoginState extends State<StartTripPage> {
+class StartTripPageState extends State<StartTripPage> {
   TextEditingController emailTF = TextEditingController();
   TextEditingController passwordTF = TextEditingController();
   ProgressDialog _progressDialog = ProgressDialog();
@@ -61,10 +65,7 @@ class _LoginState extends State<StartTripPage> {
                 ),
                 Text(
                   "Sign In",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600),
+                  style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),
                 )
               ],
             ),
@@ -109,12 +110,9 @@ class _LoginState extends State<StartTripPage> {
                             height: 45,
                             child: Center(
                                 child: Text(
-                                  "Sign In",
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.w500),
-                                )),
+                              "Sign In",
+                              style: TextStyle(color: Colors.white, fontSize: 16.0, fontWeight: FontWeight.w500),
+                            )),
                             width: MediaQuery.of(context).size.width - 20,
                           ),
                         ),
@@ -125,10 +123,7 @@ class _LoginState extends State<StartTripPage> {
                             onPressed: () {},
                             child: Text(
                               "Forgot Password?",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 15),
+                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.w600, fontSize: 15),
                             )),
                       ],
                     ),
@@ -140,21 +135,18 @@ class _LoginState extends State<StartTripPage> {
                           alignment: Alignment.bottomCenter,
                           child: RichText(
                               text: TextSpan(children: <TextSpan>[
-                                TextSpan(
-                                    text: 'Dont have an account? ',
-                                    style: TextStyle(color: Colors.black)),
-                                TextSpan(
-                                    text: 'Register',
-                                    style: TextStyle(color: Colors.blueAccent),
-                                    recognizer: TapGestureRecognizer()
-                                      ..onTap = () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => SignUpPage()),
-                                        );
-                                      }),
-                              ])),
+                            TextSpan(text: 'Dont have an account? ', style: TextStyle(color: Colors.black)),
+                            TextSpan(
+                                text: 'Register',
+                                style: TextStyle(color: Colors.blueAccent),
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(builder: (context) => SignUpPage()),
+                                    );
+                                  }),
+                          ])),
                         ))
                   ],
                 ))),
@@ -167,57 +159,48 @@ class _LoginState extends State<StartTripPage> {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: 'Please Enter Email Address',
-            description: "",
-            my_context: context,
-          ));
+                title: 'Please Enter Email Address',
+                description: "",
+                my_context: context,
+              ));
     } else if (!EmailValidator.Validate(emailTF.text)) {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: 'Please Enter Valid Email Address',
-            description: "",
-            my_context: context,
-          ));
+                title: 'Please Enter Valid Email Address',
+                description: "",
+                my_context: context,
+              ));
     } else if (passwordTF.text.length == 0) {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: 'Please Enter Password',
-            description: "",
-            my_context: context,
-          ));
+                title: 'Please Enter Password',
+                description: "",
+                my_context: context,
+              ));
     } else {
       print("Validate Successfull.....");
       getData();
     }
   }
 
-
   Future getData() async {
-
-    Map map = {
-      "email": emailTF.text,
-      "password": passwordTF.text
-    };
+    Map map = {"email": emailTF.text, "password": passwordTF.text};
 
     if (progressDialog == false) {
       progressDialog = true;
-      _progressDialog.showProgressDialog(context,
-          textToBeDisplayed: 'Please wait...', dismissAfter: null);
+      _progressDialog.showProgressDialog(context, textToBeDisplayed: 'Please wait...', dismissAfter: null);
     }
 
     await signInUser(API.userlogin, map, context);
   }
 
-  Future<http.Response> signInUser(
-      String url, Map jsonMap, BuildContext context) async {
+  Future<http.Response> signInUser(String url, Map jsonMap, BuildContext context) async {
     var body = json.encode(jsonMap);
     var responseInternet;
     try {
-      responseInternet = await http
-          .post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body)
-          .then((http.Response response) {
+      responseInternet = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body).then((http.Response response) {
         final int statusCode = response.statusCode;
         print(response);
         _progressDialog.dismissProgressDialog(context);
@@ -228,10 +211,10 @@ class _LoginState extends State<StartTripPage> {
           showDialog(
               context: context,
               builder: (BuildContext context1) => OKDialogBox(
-                title: response.statusCode.toString(),
-                description: "",
-                my_context: context,
-              ));
+                    title: response.statusCode.toString(),
+                    description: "",
+                    my_context: context,
+                  ));
 
           throw new Exception("Error while fetching data");
         } else {
@@ -251,15 +234,14 @@ class _LoginState extends State<StartTripPage> {
               };
               checkUerStatus(API.checkuserStatus, map, context);
             });
-
           } else {
             showDialog(
                 context: context,
                 builder: (BuildContext context1) => OKDialogBox(
-                  title: '' + responseData.msg,
-                  description: "",
-                  my_context: context,
-                ));
+                      title: '' + responseData.msg,
+                      description: "",
+                      my_context: context,
+                    ));
           }
         }
       });
@@ -270,23 +252,19 @@ class _LoginState extends State<StartTripPage> {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: e.toString(),
-            description: "",
-            my_context: context,
-          ));
+                title: e.toString(),
+                description: "",
+                my_context: context,
+              ));
     }
     return responseInternet;
-
   }
 
-  Future<http.Response> checkUerStatus(
-      String url, Map jsonMap, BuildContext context) async {
+  Future<http.Response> checkUerStatus(String url, Map jsonMap, BuildContext context) async {
     var body = json.encode(jsonMap);
     var responseInternet;
     try {
-      responseInternet = await http
-          .post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body)
-          .then((http.Response response) {
+      responseInternet = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body).then((http.Response response) {
         final int statusCode = response.statusCode;
         print(response);
         _progressDialog.dismissProgressDialog(context);
@@ -296,10 +274,10 @@ class _LoginState extends State<StartTripPage> {
           showDialog(
               context: context,
               builder: (BuildContext context1) => OKDialogBox(
-                title: response.statusCode.toString(),
-                description: "",
-                my_context: context,
-              ));
+                    title: response.statusCode.toString(),
+                    description: "",
+                    my_context: context,
+                  ));
 
           throw new Exception("Error while fetching data");
         } else {
@@ -324,19 +302,17 @@ class _LoginState extends State<StartTripPage> {
             setState(() {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(
-                    builder: (context) => DashboardPage()),
+                MaterialPageRoute(builder: (context) => DashboardPage()),
               );
             });
-
           } else {
             showDialog(
                 context: context,
                 builder: (BuildContext context1) => OKDialogBox(
-                  title: '' + responseData.msg,
-                  description: "",
-                  my_context: context,
-                ));
+                      title: '' + responseData.msg,
+                      description: "",
+                      my_context: context,
+                    ));
           }
         }
       });
@@ -347,10 +323,10 @@ class _LoginState extends State<StartTripPage> {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: e.toString(),
-            description: "",
-            my_context: context,
-          ));
+                title: e.toString(),
+                description: "",
+                my_context: context,
+              ));
     }
     return responseInternet;
   }

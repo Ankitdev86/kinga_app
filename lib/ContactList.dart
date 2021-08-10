@@ -58,6 +58,11 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _isLoading = true;
     });
+
+    if (progressDialog == false) {
+      progressDialog = true;
+      _progressDialog.showProgressDialog(context, textToBeDisplayed: 'Please wait...', dismissAfter: null);
+    }
     var contacts = await ContactsService.getContacts();
     _populateContacts(contacts);
   }
@@ -66,9 +71,13 @@ class _MyAppState extends State<MyApp> {
     _contacts.sort((a, b) => a.displayName.compareTo(b.displayName));
     _allContacts =
         _contacts.map((contact) => CustomContact(contact: contact)).toList();
+    _isLoading = false;
+    _progressDialog.dismissProgressDialog(context);
+    progressDialog = false;
+
     setState(() {
       // _uiCustomContacts = _allContacts;
-      _isLoading = false;
+     
     });
   }
 

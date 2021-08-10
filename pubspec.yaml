@@ -56,6 +56,9 @@ dependencies:
   provider: ^5.0.0
   tuple: ^2.0.0
   geolocator: ^7.0.3
+  url_launcher: ^6.0.9
+  pinput: ^0.2.0
+  flutter_polyline_points: ^1.0.0
 
 
 dev_dependencies:
