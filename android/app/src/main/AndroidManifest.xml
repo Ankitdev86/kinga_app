@@ -21,7 +21,7 @@
     <application
         android:usesCleartextTraffic="true"
         android:allowClearUserData="true"
-        android:label="kinga_app"
+        android:label="Kinga"
         android:requestLegacyExternalStorage="true"
         android:icon="@mipmap/ic_launcher">
 

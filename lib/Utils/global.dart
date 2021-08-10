@@ -19,7 +19,6 @@ bool isBikeDetail = false;
 String numberPlate;
 String model;
 String color;
-String year;
 
 String selectedgender;
 String selectedsendDOB;

@@ -28,4 +28,8 @@ class API {
   static const String checkUserEmail = baseUrl + "/check_email_exists/";
   static const String getUserNameImage = baseUrl + "/get_user_name_image/";
   static const String startTrip = baseUrl + "/start_trip/";
+  static const String getDashboardDataWithTrip = baseUrl + "/dashboard_data/";
+  static const String sendOtpForCompleteTrip = baseUrl + "/sending_security_code/";
+  static const String completeTripUrl = baseUrl + "/complete_trip/";
+  static const String sendEmergencymsgUrl = baseUrl + "/sending_sms_emergency_contact/";
 }

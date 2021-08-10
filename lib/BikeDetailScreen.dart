@@ -36,6 +36,7 @@ class _BikeDetailState extends State<BikeDetail> {
   String selectedModel;
   ProgressDialog _progressDialog = ProgressDialog();
   String profileImageBase64 = "";
+  String year = "";
   String networkImage;
 
   TextStyle placeholderStyle =

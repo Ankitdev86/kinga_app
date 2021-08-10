@@ -14,6 +14,7 @@ import 'package:kinga_app/Data/BikeDetailResponse.dart';
 import 'package:kinga_app/Data/KingaProfileResponse.dart';
 import 'package:kinga_app/Data/StartTripModel.dart';
 import 'package:kinga_app/Data/get_user_name_image_response.dart';
+import 'package:kinga_app/Data/send_emergency_msg_response.dart';
 import 'package:kinga_app/Data/start_trip_response.dart';
 import 'package:kinga_app/EmergencyContact.dart';
 import 'package:kinga_app/Login.dart';
@@ -28,6 +29,7 @@ import 'package:location/location.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:kinga_app/KingaProfile.dart';
+import 'Data/get_dashboard_data_response.dart';
 import 'Utils/CustomPlacePicker/src/place_picker.dart';
 import 'Utils/custom_progress_dialog.dart';
 import 'package:http/http.dart' as http;
@@ -47,6 +49,7 @@ class _DashboardPageState extends State<DashboardPage> {
   GoogleMapController _controller;
   Widget _child;
   Location location;
+  bool flagStartTripBtn = true;
 
   @override
   void initState() {
@@ -56,6 +59,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
     super.initState();
     redirectUser();
+    getDashboardData();
   }
 
   Future<void> redirectUser() async {
@@ -469,51 +473,102 @@ class _DashboardPageState extends State<DashboardPage> {
                   bottom: 15,
                   left: 20,
                   right: 20,
-                  child: InkWell(
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.5,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Colors.green,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(left: 10),
-                            child: Icon(
-                              Icons.double_arrow_sharp,
-                              color: Colors.white,
+                  child: flagStartTripBtn
+                      ? InkWell(
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: Colors.green,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: Icon(
+                                    Icons.double_arrow_sharp,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Text(
+                                  "Start Trip".toUpperCase(),
+                                  style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w500),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                )
+                              ],
                             ),
                           ),
-                          Text(
-                            "Start Trip".toUpperCase(),
-                            style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w500),
-                          ),
-                          SizedBox(
-                            width: 20,
-                          )
-                        ],
-                      ),
-                    ),
-                    onTap: () async {
-                      if (status == false) {
-                        showDialog(
-                            context: context,
-                            builder: (BuildContext context1) => OKDialogBox(
-                                  title: "Please change status online first",
-                                  description: "",
-                                  my_context: context,
-                                ));
-                      } else {
-                        chooselocation();
-                      }
+                          onTap: () async {
+                            if (status == false) {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context1) => OKDialogBox(
+                                        title: "Please change status online first",
+                                        description: "",
+                                        my_context: context,
+                                      ));
+                            } else {
+                              chooselocation();
+                            }
 
-                      // show input autocomplete with selected mode
-                      // then get the Prediction selected
-                    },
-                  ),
+                            // show input autocomplete with selected mode
+                            // then get the Prediction selected
+                          },
+                        )
+                      : InkWell(
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.5,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: Colors.green,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: Icon(
+                                    Icons.double_arrow_sharp,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                Text(
+                                  "Continue Trip".toUpperCase(),
+                                  style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w500),
+                                ),
+                                SizedBox(
+                                  width: 20,
+                                )
+                              ],
+                            ),
+                          ),
+                          onTap: () async {
+                            if (status == false) {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context1) => OKDialogBox(
+                                        title: "Please change status online first",
+                                        description: "",
+                                        my_context: context,
+                                      ));
+                            } else {
+                              var result = await Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => CompletedRide(model: myTripModel, tripId: tripId)),
+                              );
+
+                              getDashboardData();
+                            }
+
+                            // show input autocomplete with selected mode
+                            // then get the Prediction selected
+                          },
+                        ),
                 ),
                 Positioned(
                   right: 20,
@@ -547,12 +602,11 @@ class _DashboardPageState extends State<DashboardPage> {
                               ),
                             ),
                             onTap: () async {
-
                               if (progressDialog == false) {
                                 progressDialog = true;
                                 _progressDialog.showProgressDialog(context, textToBeDisplayed: 'Please wait...', dismissAfter: null);
                               }
-                              
+
                               location = new Location();
                               currentLocation = await location.getLocation();
 
@@ -567,23 +621,16 @@ class _DashboardPageState extends State<DashboardPage> {
                               progressDialog = false;
 
                               try {
-                                Future.delayed(Duration(milliseconds: 500),
-                                        () {
-                                      if (_controller != null) {
-                                        
-                                        _controller.animateCamera(
-                                          CameraUpdate.newCameraPosition(
-                                            CameraPosition(
-                                                target: LatLng(currentLocation.latitude,
-                                                    currentLocation.longitude),
-                                                zoom: 15),
-                                          ),
-                                        );
-                                      }
-                                    });
-                              } catch (e) {
-                                
-                              }
+                                Future.delayed(Duration(milliseconds: 500), () {
+                                  if (_controller != null) {
+                                    _controller.animateCamera(
+                                      CameraUpdate.newCameraPosition(
+                                        CameraPosition(target: LatLng(currentLocation.latitude, currentLocation.longitude), zoom: 15),
+                                      ),
+                                    );
+                                  }
+                                });
+                              } catch (e) {}
                             },
                           )),
                       FloatingActionButton(
@@ -673,6 +720,10 @@ class _DashboardPageState extends State<DashboardPage> {
   LocationData currentLocation;
 
   void _showBottomView(BuildContext context) {
+    txtName.text = "";
+    txtCost.text = "";
+    txtPhoneNo.text = "";
+
     showModalBottomSheet(
         context: context,
         backgroundColor: Colors.transparent,
@@ -927,7 +978,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                         ),
                                         onTap: () {
                                           Navigator.pop(context);
-                                          Navigator.of(context).pop();
+                                          sendEmergencySms();
                                         },
                                       )
                                     ],
@@ -975,6 +1026,8 @@ class _DashboardPageState extends State<DashboardPage> {
     var myaddressTmp = await Geocoder.local.findAddressesFromCoordinates(coordinates);
     var first = myaddressTmp.first;
     myaddress = first.addressLine;
+    myCurrentAddress = first.addressLine;
+    myCurrentAddressPlace = first.locality;
   }
 
   chooselocation() {
@@ -1013,8 +1066,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
             // Navigator.pop(context,true);
             Navigator.pop(context);
-            getProfileData(result.addressComponents[0].shortName, first.addressLine, distanceInKm.toStringAsFixed(2));
-
+            showStartTripDialog(result.addressComponents[0].shortName, first.addressLine, myName, "http://34.219.133.113" + myProfileImnage, distanceInKm.toStringAsFixed(2));
             // Navigator.push(
             //   context,
             //   MaterialPageRoute(
@@ -1027,176 +1079,6 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   ProgressDialog _progressDialog = ProgressDialog();
-
-  Future getProfileData(String shortAddress, String address, String km) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    String user_id = preferences.getString(AppConstants.UserID);
-    print('Userrrrrrrrrrr');
-    print(API.get_kinga_profile);
-
-    Map map = {
-      "user_id": user_id,
-    };
-
-    if (progressDialog == false) {
-      progressDialog = true;
-      _progressDialog.showProgressDialog(context, textToBeDisplayed: 'Please wait...', dismissAfter: null);
-    }
-
-    await getKingaProfile(API.getUserNameImage, map, context, shortAddress, address, km);
-  }
-
-  Future<http.Response> getKingaProfile(String url, Map jsonMap, BuildContext context, String shortAddress, String address, String km) async {
-    var body = json.encode(jsonMap);
-    var responseInternet;
-    try {
-      responseInternet = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body).then((http.Response response) {
-        final int statusCode = response.statusCode;
-        print(response);
-        _progressDialog.dismissProgressDialog(context);
-        progressDialog = false;
-
-        if (statusCode < 200 || statusCode > 400 || json == null) {
-          print(statusCode);
-          showDialog(
-              context: context,
-              builder: (BuildContext context1) => OKDialogBox(
-                    title: 'Check your internet connections and settings !',
-                    description: "",
-                    my_context: context,
-                  ));
-
-          throw new Exception("Error while fetching data");
-        } else {
-          print(response.body);
-          GetUserNameImageResponse responseData = new GetUserNameImageResponse();
-          responseData.fromJson(json.decode(response.body));
-          print(response.body);
-          print(responseData.name);
-          Map<String, dynamic> data = responseData.toJson();
-          if (responseData.status == "1") {
-            _progressDialog.dismissProgressDialog(context);
-            progressDialog = false;
-            setState(() {
-              //wristbandTF.text = responseData.kingaProfileDetails.wristBandNo;
-              // confwristbandTF.text = responseData.kingaProfileDetails.wristBandNo;
-              // bloodGroup = responseData.kingaProfileDetails.bloodGroup;
-              // allergy = responseData.kingaProfileDetails.allergy;
-              // insurer = responseData.kingaProfileDetails.insurer;
-              // policyTF.text = responseData.kingaProfileDetails.policyNo;
-              // nhifTF.text = responseData.kingaProfileDetails.nHIFNo;
-              String networkimage = API.baseUrl + responseData.image;
-
-              sendBikeDetail(shortAddress, address, responseData.name, networkimage, km);
-            });
-          } else {
-            showDialog(
-                context: context,
-                builder: (BuildContext context1) => OKDialogBox(
-                      title: '' + responseData.msg,
-                      description: "",
-                      my_context: context,
-                    ));
-          }
-        }
-      });
-    } catch (e) {
-      _progressDialog.dismissProgressDialog(context);
-      progressDialog = false;
-
-      showDialog(
-          context: context,
-          builder: (BuildContext context1) => OKDialogBox(
-                title: e.toString(),
-                description: "",
-                my_context: context,
-              ));
-    }
-    return responseInternet;
-  }
-
-  Future sendBikeDetail(String shortAddress, String address, String username, String profileImage, String km) async {
-    SharedPreferences preferences = await SharedPreferences.getInstance();
-    String user_id = preferences.getString(AppConstants.UserID);
-    print('Userrrrrrrrrrr');
-
-    Map map = {
-      "user_id": user_id,
-    };
-
-    if (progressDialog == false) {
-      progressDialog = true;
-      _progressDialog.showProgressDialog(context, textToBeDisplayed: 'Please wait...', dismissAfter: null);
-    }
-
-    await getBikeDetail(API.get_bike_details, map, context, shortAddress, address, username, profileImage, km);
-  }
-
-  String year = "";
-  String bikeName = "";
-  String modelnumber = "";
-
-  Future<http.Response> getBikeDetail(String url, Map jsonMap, BuildContext context, String shortAddress, String address, String username, String profileImage, String km) async {
-    var body = json.encode(jsonMap);
-    var responseInternet;
-    try {
-      responseInternet = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body).then((http.Response response) {
-        final int statusCode = response.statusCode;
-        print(response);
-        _progressDialog.dismissProgressDialog(context);
-        progressDialog = false;
-
-        if (statusCode < 200 || statusCode > 400 || json == null) {
-          print(statusCode);
-          showDialog(
-              context: context,
-              builder: (BuildContext context1) => OKDialogBox(
-                    title: 'Check your internet connections and settings !',
-                    description: "",
-                    my_context: context,
-                  ));
-
-          throw new Exception("Error while fetching data");
-        } else {
-          print(response.body);
-          GetBikeData responseData = new GetBikeData();
-          responseData.fromJson(json.decode(response.body));
-          print(response.body);
-          Map<String, dynamic> data = responseData.toJson();
-          if (responseData.status == "1") {
-            _progressDialog.dismissProgressDialog(context);
-            progressDialog = false;
-
-            year = responseData.bikeDetails.year;
-            bikeName = responseData.bikeDetails.numberPlate;
-            modelnumber = responseData.bikeDetails.model;
-
-            showStartTripDialog(shortAddress, address, username, profileImage, km);
-          } else {
-            showDialog(
-                context: context,
-                builder: (BuildContext context1) => OKDialogBox(
-                      title: '' + responseData.msg,
-                      description: "",
-                      my_context: context,
-                    ));
-          }
-        }
-      });
-    } catch (e) {
-      _progressDialog.dismissProgressDialog(context);
-      progressDialog = false;
-
-      showDialog(
-          context: context,
-          builder: (BuildContext context1) => OKDialogBox(
-                title: e.toString(),
-                description: "",
-                my_context: context,
-              ));
-    }
-    return responseInternet;
-  }
 
   TextEditingController txtName = TextEditingController();
   TextEditingController txtPhoneNo = TextEditingController();
@@ -1273,7 +1155,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                       ),
                                       image: new DecorationImage(
                                         fit: BoxFit.fill,
-                                        image: NetworkImage(profileImage),
+                                        image: NetworkImage(myProfileImnage),
                                       ))),
                               Expanded(
                                 child: Row(
@@ -1297,7 +1179,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                         Padding(
                                           padding: EdgeInsets.only(left: 10),
                                           child: Text(
-                                            "Member since ${year}",
+                                            "Member since ${myBikeYear}",
                                             style: TextStyle(
                                               color: Colors.black,
                                               fontSize: 14,
@@ -1313,7 +1195,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                         Padding(
                                           padding: EdgeInsets.only(right: 20),
                                           child: Text(
-                                            "${modelnumber}",
+                                            "${myBikeModel}",
                                             style: TextStyle(
                                               color: Colors.black,
                                               fontSize: 15,
@@ -1324,7 +1206,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                         Padding(
                                           padding: EdgeInsets.only(right: 20),
                                           child: Text(
-                                            bikeName,
+                                            myBikeName,
                                             style: TextStyle(
                                               color: Colors.black,
                                               fontSize: 14,
@@ -1580,9 +1462,9 @@ class _DashboardPageState extends State<DashboardPage> {
                                                 model.startLng = startLng;
                                                 model.dropLatt = dropLatt;
                                                 model.dropLng = dropLng;
-                                                model.bikeYear = year;
-                                                model.bikeModel = modelnumber;
-                                                model.bikeName = bikeName;
+                                                model.bikeYear = myBikeYear;
+                                                model.bikeModel = myBikeModel;
+                                                model.bikeName = myBikeName;
                                                 model.profileImage = profileImage;
 
                                                 Navigator.pop(context1);
@@ -1632,7 +1514,7 @@ class _DashboardPageState extends State<DashboardPage> {
       "user_id": user_id,
       "passenger_name": model.passangerName,
       "from_address": myaddress,
-      "from_lat": model.startLng.toString(),
+      "from_lat": model.startLatt.toString(),
       "from_long": model.startLng.toString(),
       "to_address": model.dropAddress,
       "to_lat": model.dropLatt.toString(),
@@ -1651,10 +1533,12 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Future<http.Response> startTriprequestCall(String url, Map jsonMap, BuildContext context, var model) async {
+    var request = json.encode(jsonMap);
+    print(request);
     var body = json.encode(jsonMap);
     var responseInternet;
     try {
-      responseInternet = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body).then((http.Response response) {
+      responseInternet = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body).then((http.Response response) async {
         final int statusCode = response.statusCode;
         print(response);
         _progressDialog.dismissProgressDialog(context);
@@ -1681,11 +1565,13 @@ class _DashboardPageState extends State<DashboardPage> {
             _progressDialog.dismissProgressDialog(context);
             progressDialog = false;
 
-            String tripId = responseData.tripId;
-            Navigator.push(
+            tripId = responseData.tripId;
+            var result = await Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => CompletedRide(model: model, tripId: tripId)),
             );
+
+            getDashboardData();
           } else {
             showDialog(
                 context: context,
@@ -1708,6 +1594,129 @@ class _DashboardPageState extends State<DashboardPage> {
                 description: "",
                 my_context: context,
               ));
+    }
+    return responseInternet;
+  }
+
+  var myTripModel;
+
+  Future getDashboardData() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String user_id = preferences.getString(AppConstants.UserID);
+
+    Map map = {"user_id": user_id};
+
+    if (progressDialog == false) {
+      progressDialog = true;
+      _progressDialog.showProgressDialog(context, textToBeDisplayed: 'Please wait...', dismissAfter: null);
+    }
+
+    await getDashboardDataRequestCall(API.getDashboardDataWithTrip, map, context, model);
+  }
+
+  String tripId = "";
+
+  Future<http.Response> getDashboardDataRequestCall(String url, Map jsonMap, BuildContext context, var model) async {
+    var body = json.encode(jsonMap);
+    var responseInternet;
+    try {
+      responseInternet = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body).then((http.Response response) async {
+        final int statusCode = response.statusCode;
+        print(response);
+        _progressDialog.dismissProgressDialog(context);
+        progressDialog = false;
+
+        if (statusCode < 200 || statusCode > 400 || json == null) {
+          print(statusCode);
+          showDialog(
+              context: context,
+              builder: (BuildContext context1) => OKDialogBox(
+                    title: 'Check your internet connections and settings !',
+                    description: "",
+                    my_context: context,
+                  ));
+
+          throw new Exception("Error while fetching data");
+        } else {
+          print(response.body);
+          GetDashboardDataResponse responseData = new GetDashboardDataResponse();
+          responseData.fromJson(json.decode(response.body));
+          print(response.body);
+          Map<String, dynamic> data = responseData.toJson();
+          if (responseData.status == "1") {
+            myName = responseData.dashboard.userDetails[0].firstName + " " + responseData.dashboard.userDetails[0].lastName;
+            myProfileImnage = responseData.dashboard.userDetails[0].profileImg;
+            myProfileImnage = "http://34.219.133.113" + myProfileImnage;
+            myBikeModel = responseData.dashboard.bikeDetails[0].model;
+            myBikeYear = responseData.dashboard.bikeDetails[0].year;
+            myBikeName = responseData.dashboard.bikeDetails[0].numberPlate;
+
+            if (responseData.dashboard.tripDetails.length > 0) {
+              var tripStatus = responseData.dashboard.tripDetails[0].tripStatus;
+              if (tripStatus == "False") {
+                flagStartTripBtn = false;
+                myaddress = responseData.dashboard.tripDetails[0].fromAddress;
+
+                var passengerName = responseData.dashboard.tripDetails[0].passengerName;
+                var phoneNo = responseData.dashboard.tripDetails[0].phoneNo;
+                var price = responseData.dashboard.tripDetails[0].price;
+
+                var startLatt = responseData.dashboard.tripDetails[0].fromLat;
+                var startLng = responseData.dashboard.tripDetails[0].fromLong;
+
+                var dropLatt = responseData.dashboard.tripDetails[0].toLat;
+                var dropLng = responseData.dashboard.tripDetails[0].toLong;
+
+                String dropAddress = "";
+                String dropShortAddress = "";
+                String kmOfBothDistance = "";
+
+                double distanceInMeters = Geolocator.distanceBetween(double.parse(startLatt), double.parse(startLng), double.parse(dropLatt), double.parse(dropLng));
+
+                double distanceInKm = distanceInMeters / 1000;
+                final coordinates = new Coordinates(double.parse(dropLatt), double.parse(dropLng));
+                var addresses = await Geocoder.local.findAddressesFromCoordinates(coordinates);
+                var first = addresses.first;
+                dropAddress = first.addressLine;
+                dropShortAddress = first.locality;
+
+                kmOfBothDistance = distanceInKm.toStringAsFixed(2);
+
+                StartTripModel model = new StartTripModel();
+                model.dropAddress = dropAddress;
+                model.dropShortAddress = dropShortAddress;
+                model.myName = myName;
+                model.km = kmOfBothDistance;
+                model.passangerName = passengerName;
+                model.passangerPhone = phoneNo;
+                model.passangerCost = price;
+                model.startLatt = double.parse(startLatt);
+                model.startLng = double.parse(startLng);
+                model.dropLatt = double.parse(dropLatt);
+                model.dropLng = double.parse(dropLng);
+                model.bikeYear = myBikeYear;
+                model.bikeModel = myBikeModel;
+                model.bikeName = myBikeName;
+                model.profileImage = myProfileImnage;
+
+                myTripModel = model;
+                setState(() {});
+              } else {
+                flagStartTripBtn = true;
+                setState(() {});
+              }
+            } else {
+              flagStartTripBtn = true;
+              setState(() {});
+            }
+          } else {
+            
+          }
+        }
+      });
+    } catch (e) {
+      _progressDialog.dismissProgressDialog(context);
+      progressDialog = false;
     }
     return responseInternet;
   }
@@ -1892,4 +1901,146 @@ class _DashboardPageState extends State<DashboardPage> {
 //   }
 // }
 
+  Future sendEmergencySms() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    String user_id = preferences.getString(AppConstants.UserID);
+
+    Map map = {"user_id": user_id};
+
+    if (progressDialog == false) {
+      progressDialog = true;
+      _progressDialog.showProgressDialog(context, textToBeDisplayed: 'Please wait...', dismissAfter: null);
+    }
+
+    var request = json.encode(map);
+    print(request);
+    var body = json.encode(map);
+    var responseInternet;
+    try {
+      responseInternet = await http.post(Uri.parse(API.sendEmergencymsgUrl), headers: {"Content-Type": "application/json"}, body: body).then((http.Response response) async {
+        final int statusCode = response.statusCode;
+        print(response);
+        _progressDialog.dismissProgressDialog(context);
+        progressDialog = false;
+
+        if (statusCode < 200 || statusCode > 400 || json == null) {
+          print(statusCode);
+          showDialog(
+              context: context,
+              builder: (BuildContext context1) => OKDialogBox(
+                    title: 'Check your internet connections and settings !',
+                    description: "",
+                    my_context: context,
+                  ));
+
+          throw new Exception("Error while fetching data");
+        } else {
+          SendEmergencyMsgResponse responseData = new SendEmergencyMsgResponse();
+          responseData.fromJson(json.decode(response.body));
+          print(response.body);
+          Map<String, dynamic> data = responseData.toJson();
+          if (responseData.status == "1") {
+            _progressDialog.dismissProgressDialog(context);
+            progressDialog = false;
+
+            showDialog(
+                context: context,
+                builder: (BuildContext context1) {
+                  return StatefulBuilder(builder: (context1, setState1) {
+                    return Dialog(
+                      elevation: 0,
+                      // insetPadding: EdgeInsets.all(0),
+                      //backgroundColor: Colors.transparent,
+                      child: OrientationBuilder(
+                        builder: (context, orientation) {
+                          return Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      "Success",
+                                      style: TextStyle(color: Colors.black, fontSize: 17, fontWeight: FontWeight.w500),
+                                    )
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Row(
+                                  children: [
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Flexible(
+                                      child: Text(
+                                        responseData.msg,
+                                        style: TextStyle(color: Colors.black, fontSize: 15, fontWeight: FontWeight.w500),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 20,
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    InkWell(
+                                      onTap: () {
+                                        Navigator.pop(context1);
+                                      },
+                                      child: Text(
+                                        "OK",
+                                        style: TextStyle(color: Colors.blue, fontSize: 15, fontWeight: FontWeight.w500),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 15,
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(
+                                  height: 15,
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    );
+                  });
+                });
+          } else {
+            showDialog(
+                context: context,
+                builder: (BuildContext context1) => OKDialogBox(
+                      title: '' + responseData.msg,
+                      description: "",
+                      my_context: context,
+                    ));
+          }
+        }
+      });
+    } catch (e) {
+      _progressDialog.dismissProgressDialog(context);
+      progressDialog = false;
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context1) => OKDialogBox(
+                title: e.toString(),
+                description: "",
+                my_context: context,
+              ));
+    }
+  }
 }
