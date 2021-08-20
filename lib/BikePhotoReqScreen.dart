@@ -11,6 +11,11 @@ import 'SureBikePhotoScreen.dart';
 
 
 class BikePhotoReqScreen extends StatefulWidget {
+  
+  final bool isFromUpdate;
+
+  const BikePhotoReqScreen(this.isFromUpdate);
+  
   @override
   _PhotoReqScreenState createState() => _PhotoReqScreenState();
 }
@@ -324,10 +329,10 @@ class _PhotoReqScreenState extends State<BikePhotoReqScreen> {
 
           print("base 64 ================"+profileImageBase64);
 
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-                builder: (context) => SureBikePhotoScreen(profileImage: profImage, isFileUploaded: true,)),
+                builder: (context) => SureBikePhotoScreen( profImage,  true,widget.isFromUpdate)),
           );
           // flagImgLoaded = false;
           // profileImageBase64;
@@ -379,7 +384,7 @@ class _PhotoReqScreenState extends State<BikePhotoReqScreen> {
             Navigator.pushReplacement(
               context,
               MaterialPageRoute(
-                  builder: (context) => SureBikePhotoScreen(profileImage: profImage, isFileUploaded: true,)),
+                  builder: (context) => SureBikePhotoScreen(profImage,  true,widget.isFromUpdate)),
             );
           });
         } catch (e) {

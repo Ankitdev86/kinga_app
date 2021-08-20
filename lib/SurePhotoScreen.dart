@@ -7,10 +7,12 @@ import 'package:kinga/PhotoReqScreen.dart';
 import 'package:kinga/Utils/global.dart';
 
 class SurePhotoScreen extends StatefulWidget {
-  File profileImage ;
-  bool isFileUploaded;
+  File profileImage;
 
-  SurePhotoScreen({this.profileImage, this.isFileUploaded});
+  bool isFileUploaded;
+  final bool isFromUpdate;
+
+  SurePhotoScreen(this.profileImage, this.isFileUploaded, this.isFromUpdate);
 
   @override
   _SurePhotoScreenState createState() => _SurePhotoScreenState();
@@ -41,35 +43,26 @@ class _SurePhotoScreenState extends State<SurePhotoScreen> {
                       height: 100,
                     ),
                     Center(
-                      child: widget.isFileUploaded ? Container(
-                          height : 200,width:200,
-                          margin: EdgeInsets.only(top: 50,left: 10,right: 10),
-                          decoration: new BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Colors.blueGrey[100], //                   <--- border color
-                                width: 2,
-                              ),
-                              image: new DecorationImage(
-                                  fit: BoxFit.fill,
-                                  image:  FileImage(widget.profileImage)
-                              )
-                          )) :
-
-                      CircleAvatar(
-                          backgroundColor: Colors.greenAccent[400],
-                          radius: 100,
-                          child: Image(image: AssetImage('Assets/close.png'))),
+                      child: widget.isFileUploaded
+                          ? Container(
+                              height: 200,
+                              width: 200,
+                              margin: EdgeInsets.only(top: 50, left: 10, right: 10),
+                              decoration: new BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    color: Colors.blueGrey[100], //                   <--- border color
+                                    width: 2,
+                                  ),
+                                  image: new DecorationImage(fit: BoxFit.fill, image: FileImage(widget.profileImage))))
+                          : CircleAvatar(backgroundColor: Colors.greenAccent[400], radius: 100, child: Image(image: AssetImage('Assets/close.png'))),
                     ),
                     SizedBox(
                       height: 40,
                     ),
                     Text(
                       "Want to use this photo",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600),
+                      style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),
                     ),
                   ],
                 ),
@@ -90,19 +83,15 @@ class _SurePhotoScreenState extends State<SurePhotoScreen> {
                           child: TextButton(
                             child: Text(
                               "RETAKE",
-                              style: TextStyle(
-                                  color: Color(0xFF2C51BE),
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 17),
+                              style: TextStyle(color: Color(0xFF2C51BE), fontWeight: FontWeight.w600, fontSize: 17),
                             ),
                             onPressed: () {
-
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (context) => PhotoReqScreen()),
+                                MaterialPageRoute(builder: (context) => PhotoReqScreen(widget.isFromUpdate)),
                               );
-                              
-                             // Navigator.of(context).pop();
+
+                              // Navigator.of(context).pop();
                             },
                           ),
                         ),
@@ -116,10 +105,7 @@ class _SurePhotoScreenState extends State<SurePhotoScreen> {
                           child: TextButton(
                               child: Text(
                                 "SUBMIT",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 17),
+                                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 17),
                               ),
                               onPressed: () {
                                 uploadedImage = widget.profileImage;
@@ -127,21 +113,18 @@ class _SurePhotoScreenState extends State<SurePhotoScreen> {
                                   Navigator.pushReplacement<void, void>(
                                     context,
                                     MaterialPageRoute<void>(
-                                      builder: (BuildContext context) => BikeDetail(false),
+                                      builder: (BuildContext context) => BikeDetail(widget.isFromUpdate),
                                     ),
                                   );
-
                                 } else {
                                   Navigator.pushReplacement<void, void>(
                                     context,
                                     MaterialPageRoute<void>(
-                                      builder: (BuildContext context) => PersonalDetail(false),
+                                      builder: (BuildContext context) => PersonalDetail(widget.isFromUpdate),
                                     ),
                                   );
-
                                 }
-                              }
-                          ),
+                              }),
                         )
                       ],
                     )),

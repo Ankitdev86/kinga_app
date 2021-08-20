@@ -9,8 +9,9 @@ import 'package:kinga/Utils/global.dart';
 class SureBikePhotoScreen extends StatefulWidget {
   File profileImage ;
   bool isFileUploaded;
+  final bool isFromUpdate;
 
-  SureBikePhotoScreen({this.profileImage, this.isFileUploaded});
+  SureBikePhotoScreen(this.profileImage, this.isFileUploaded,this.isFromUpdate);
 
   @override
   _SurePhotoScreenState createState() => _SurePhotoScreenState();
@@ -99,7 +100,7 @@ class _SurePhotoScreenState extends State<SureBikePhotoScreen> {
 
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (context) => BikePhotoReqScreen()),
+                                MaterialPageRoute(builder: (context) => BikePhotoReqScreen(widget.isFromUpdate)),
                               );
                               
                              // Navigator.of(context).pop();
@@ -127,7 +128,7 @@ class _SurePhotoScreenState extends State<SureBikePhotoScreen> {
                                   Navigator.pushReplacement<void, void>(
                                     context,
                                     MaterialPageRoute<void>(
-                                      builder: (BuildContext context) => BikeDetail(false),
+                                      builder: (BuildContext context) => BikeDetail(widget.isFromUpdate),
                                     ),
                                   );
 
@@ -135,7 +136,7 @@ class _SurePhotoScreenState extends State<SureBikePhotoScreen> {
                                   Navigator.pushReplacement<void, void>(
                                     context,
                                     MaterialPageRoute<void>(
-                                      builder: (BuildContext context) => PersonalDetail(false),
+                                      builder: (BuildContext context) => PersonalDetail(widget.isFromUpdate),
                                     ),
                                   );
 

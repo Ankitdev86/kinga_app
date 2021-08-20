@@ -82,7 +82,7 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
               onPressed: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => PersonalDetail(false)),
+                MaterialPageRoute(builder: (context) => PersonalDetail(true)),
               ),
               color: Color(0xFF2C51BE),
               radius: BorderRadius.circular(5.0),
@@ -99,7 +99,7 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
               onPressed: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => BikeDetail(false)),
+                MaterialPageRoute(builder: (context) => BikeDetail(true)),
               ),
               color: Color(0xFF2C51BE),
               radius: BorderRadius.circular(5.0),
@@ -116,7 +116,7 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
               onPressed: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => KingaProfileScreen(false)),
+                MaterialPageRoute(builder: (context) => KingaProfileScreen(true)),
               ),
               color: Color(0xFF2C51BE),
               radius: BorderRadius.circular(5.0),
@@ -193,17 +193,17 @@ class _DashboardPageState extends State<DashboardPage> {
                         Container(
                             height: 50,
                             width: 50,
-                            // margin: EdgeInsets.only(top: 50,left: 10,right: 10),
+                            //margin: EdgeInsets.only(top: 10, left: 10, right: 10, bottom: 10),
                             decoration: new BoxDecoration(
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Colors.blueGrey[100], //                   <--- border color
-                                width: 2,
-                              ),
-                              image: DecorationImage(
-                                image: AssetImage('Assets/Profile Image.png'),
-                              ),
-                            )),
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: Colors.blueGrey[100], //                   <--- border color
+                                  width: 2,
+                                ),
+                                image: new DecorationImage(
+                                  fit: BoxFit.fill,
+                                  image: NetworkImage(myProfileImnage),
+                                ))),
                         SizedBox(
                           width: 10,
                         ),

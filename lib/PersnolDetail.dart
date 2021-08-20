@@ -128,385 +128,386 @@ class _PersonalDetailState extends State<PersonalDetail> {
             ),
           ),
         ),
-        body:
-            WillPopScope(
-    onWillPop: () {
-      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => DashboardPage()), (Route<dynamic> route) => false);
-
-    },
-    child:
-    Stack(
-          children: [
-            SingleChildScrollView(
-              child: Container(
-                // height: MediaQuery.of(context).size.height,
-                color: Colors.white,
-                child: Padding(
-                  padding: EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 100),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(left: 10, right: 10),
-                          height: 30,
-                          width: MediaQuery.of(context).size.width,
-                          child: Text(
-                            "Personal Details",
-                            style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                          // margin: EdgeInsets.only(left: 10, right: 10),
-                          height: 1,
-                          color: Colors.grey,
-                        ),
-                        SizedBox(
-                          height: 20,
-                        ),
-                        Row(
+        body: WillPopScope(
+            onWillPop: () {
+              if (widget.isUpdate) {
+                Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => DashboardPage()), (Route<dynamic> route) => false);
+              } else {
+                Navigator.pop(context);
+              }
+            },
+            child: Stack(
+              children: [
+                SingleChildScrollView(
+                  child: Container(
+                    // height: MediaQuery.of(context).size.height,
+                    color: Colors.white,
+                    child: Padding(
+                      padding: EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 100),
+                      child: SingleChildScrollView(
+                        child: Column(
                           children: [
-                            uploadedImage == null
-                                ? Container(
-                                    height: 60,
-                                    width: 60,
-                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: Color(0xFFECECEC)),
-                                    child: networkimage == null || networkimage.isEmpty
-                                        ? IconButton(
-                                            icon: Icon(
-                                              Icons.camera_alt,
-                                              color: Colors.black,
-                                              size: 30,
-                                            ),
-                                            onPressed: () {
-                                              assignValue();
-                                              isBikeDetail = false;
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(builder: (context) => PhotoReqScreen()),
-                                              );
-                                            })
-                                        : InkWell(
-                                            child: Container(
-                                                height: 60,
-                                                width: 60,
-                                                // margin: EdgeInsets.only(top: 50,left: 10,right: 10),
-                                                decoration: new BoxDecoration(
-                                                    shape: BoxShape.circle,
-                                                    border: Border.all(
-                                                      color: Colors.blueGrey[100], //                   <--- border color
-                                                      width: 2,
-                                                    ),
-                                                    image: new DecorationImage(
-                                                      fit: BoxFit.fill,
-                                                      image: NetworkImage(networkimage),
-                                                    ))),
-                                            onTap: () {
-                                              assignValue();
-                                              isBikeDetail = false;
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(builder: (context) => PhotoReqScreen()),
-                                              );
-                                            },
-                                          ))
-                                : InkWell(
-                                    child: Container(
+                            Container(
+                              margin: EdgeInsets.only(left: 10, right: 10),
+                              height: 30,
+                              width: MediaQuery.of(context).size.width,
+                              child: Text(
+                                "Personal Details",
+                                style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Container(
+                              // margin: EdgeInsets.only(left: 10, right: 10),
+                              height: 1,
+                              color: Colors.grey,
+                            ),
+                            SizedBox(
+                              height: 20,
+                            ),
+                            Row(
+                              children: [
+                                uploadedImage == null
+                                    ? Container(
                                         height: 60,
                                         width: 60,
-                                        // margin: EdgeInsets.only(top: 50,left: 10,right: 10),
-                                        decoration: new BoxDecoration(
-                                            shape: BoxShape.circle,
-                                            border: Border.all(
-                                              color: Colors.blueGrey[100], //                   <--- border color
-                                              width: 2,
-                                            ),
-                                            image: new DecorationImage(fit: BoxFit.fill, image: FileImage(uploadedImage)))),
+                                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: Color(0xFFECECEC)),
+                                        child: networkimage == null || networkimage.isEmpty
+                                            ? IconButton(
+                                                icon: Icon(
+                                                  Icons.camera_alt,
+                                                  color: Colors.black,
+                                                  size: 30,
+                                                ),
+                                                onPressed: () {
+                                                  assignValue();
+                                                  isBikeDetail = false;
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(builder: (context) => PhotoReqScreen(widget.isUpdate)),
+                                                  );
+                                                })
+                                            : InkWell(
+                                                child: Container(
+                                                    height: 60,
+                                                    width: 60,
+                                                    // margin: EdgeInsets.only(top: 50,left: 10,right: 10),
+                                                    decoration: new BoxDecoration(
+                                                        shape: BoxShape.circle,
+                                                        border: Border.all(
+                                                          color: Colors.blueGrey[100], //                   <--- border color
+                                                          width: 2,
+                                                        ),
+                                                        image: new DecorationImage(
+                                                          fit: BoxFit.fill,
+                                                          image: NetworkImage(networkimage),
+                                                        ))),
+                                                onTap: () {
+                                                  assignValue();
+                                                  isBikeDetail = false;
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(builder: (context) => PhotoReqScreen(widget.isUpdate)),
+                                                  );
+                                                },
+                                              ))
+                                    : InkWell(
+                                        child: Container(
+                                            height: 60,
+                                            width: 60,
+                                            // margin: EdgeInsets.only(top: 50,left: 10,right: 10),
+                                            decoration: new BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                  color: Colors.blueGrey[100], //                   <--- border color
+                                                  width: 2,
+                                                ),
+                                                image: new DecorationImage(fit: BoxFit.fill, image: FileImage(uploadedImage)))),
+                                        onTap: () {
+                                          assignValue();
+                                          isBikeDetail = false;
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(builder: (context) => PhotoReqScreen(widget.isUpdate)),
+                                          );
+                                        },
+                                      ),
+                                SizedBox(
+                                  width: 30,
+                                ),
+                                Text(
+                                  "Upload profile photo",
+                                  style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 20),
+                                ),
+                              ],
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 10, right: 10, top: 30),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 0, right: 10),
+                                    child: DropdownButton(
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          gender = newValue;
+                                        });
+                                      },
+                                      items: genderList.map((location) {
+                                        return DropdownMenuItem(
+                                          child: new Text(location),
+                                          value: location,
+                                        );
+                                      }).toList(),
+                                      icon: Icon(
+                                        Icons.arrow_forward_ios_sharp,
+                                        color: Colors.grey,
+                                      ),
+                                      iconSize: 25,
+                                      style: gender == null ? placeholderStyle : selectedValueStyle,
+                                      value: gender,
+                                      hint: Text(
+                                        "Gender",
+                                        style: TextStyle(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w500),
+                                      ),
+                                      isExpanded: true,
+                                      underline: SizedBox(
+                                        height: 0,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  Container(
+                                    height: 1,
+                                    color: Colors.grey,
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  InkWell(
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          showDate == null ? "Date Of Birth" : showDate,
+                                          style: showDate == null ? placeholderStyle : selectedValueStyle,
+                                        ),
+                                        IconButton(
+                                          icon: Icon(Icons.arrow_forward_ios_sharp),
+                                          onPressed: () {
+                                            _selectDateofBirth(context);
+                                          },
+                                          iconSize: 20,
+                                          color: Colors.grey,
+                                        )
+                                      ],
+                                    ),
                                     onTap: () {
-                                      assignValue();
-                                      isBikeDetail = false;
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(builder: (context) => PhotoReqScreen()),
-                                      );
+                                      _selectDateofBirth(context);
                                     },
                                   ),
-                            SizedBox(
-                              width: 30,
-                            ),
-                            Text(
-                              "Upload profile photo",
-                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 20),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  Container(
+                                    height: 1,
+                                    color: Colors.grey,
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 0, right: 10),
+                                    child: DropdownButton(
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          county = newValue;
+                                        });
+                                      },
+                                      items: countyList.map((location) {
+                                        return DropdownMenuItem(
+                                          child: new Text(location),
+                                          value: location,
+                                        );
+                                      }).toList(),
+                                      icon: Icon(
+                                        Icons.arrow_forward_ios_sharp,
+                                        color: Colors.grey,
+                                      ),
+                                      iconSize: 25,
+                                      style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500),
+                                      value: county,
+                                      hint: Text(
+                                        "County",
+                                        style: county == null ? placeholderStyle : selectedValueStyle,
+                                      ),
+                                      isExpanded: true,
+                                      underline: SizedBox(
+                                        height: 0,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  Container(
+                                    height: 1,
+                                    color: Colors.grey,
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 0, right: 10),
+                                    child: DropdownButton(
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          subCounty = newValue;
+                                        });
+                                      },
+                                      items: subCountyList.map((location) {
+                                        return DropdownMenuItem(
+                                          child: new Text(location),
+                                          value: location,
+                                        );
+                                      }).toList(),
+                                      icon: Icon(
+                                        Icons.arrow_forward_ios_sharp,
+                                        color: Colors.grey,
+                                      ),
+                                      iconSize: 25,
+                                      style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500),
+                                      value: subCounty,
+                                      hint: Text(
+                                        "SubCounty",
+                                        style: county == null ? placeholderStyle : selectedValueStyle,
+                                      ),
+                                      isExpanded: true,
+                                      underline: SizedBox(
+                                        height: 0,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  Container(
+                                    height: 1,
+                                    color: Colors.grey,
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 0, right: 10),
+                                    child: DropdownButton(
+                                      onChanged: (newValue) {
+                                        setState(() {
+                                          sacco = newValue;
+                                        });
+                                      },
+                                      items: saccoList.map((location) {
+                                        return DropdownMenuItem(
+                                          child: new Text(location),
+                                          value: location,
+                                        );
+                                      }).toList(),
+                                      icon: Icon(
+                                        Icons.arrow_forward_ios_sharp,
+                                        color: Colors.grey,
+                                      ),
+                                      iconSize: 25,
+                                      style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500),
+                                      value: sacco,
+                                      hint: Text(
+                                        "Sacco",
+                                        style: sacco == null ? placeholderStyle : selectedValueStyle,
+                                      ),
+                                      isExpanded: true,
+                                      underline: SizedBox(
+                                        height: 0,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  Container(
+                                    height: 1,
+                                    color: Colors.grey,
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 0, right: 10),
+                                    child: TextField(
+                                        // keyboardType: TextInputType.emailAddress,
+                                        controller: bakTF,
+                                        decoration: InputDecoration(
+                                          hintText: 'Bak#',
+                                          hintStyle: TextStyle(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w500),
+                                        )),
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 0, right: 10),
+                                    child: TextField(
+                                      controller: passwordTF,
+                                      obscureText: true,
+                                      decoration: InputDecoration(hintText: 'Password', hintStyle: TextStyle(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w500)),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 15,
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 0, right: 10),
+                                    child: TextField(
+                                      controller: confPasswordTF,
+                                      obscureText: true,
+                                      decoration: InputDecoration(hintText: 'Confirm password', hintStyle: TextStyle(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w500)),
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10, right: 10, top: 30),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 0, right: 10),
-                                child: DropdownButton(
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      gender = newValue;
-                                    });
-                                  },
-                                  items: genderList.map((location) {
-                                    return DropdownMenuItem(
-                                      child: new Text(location),
-                                      value: location,
-                                    );
-                                  }).toList(),
-                                  icon: Icon(
-                                    Icons.arrow_forward_ios_sharp,
-                                    color: Colors.grey,
-                                  ),
-                                  iconSize: 25,
-                                  style: gender == null ? placeholderStyle : selectedValueStyle,
-                                  value: gender,
-                                  hint: Text(
-                                    "Gender",
-                                    style: TextStyle(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w500),
-                                  ),
-                                  isExpanded: true,
-                                  underline: SizedBox(
-                                    height: 0,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 8,
-                              ),
-                              Container(
-                                height: 1,
-                                color: Colors.grey,
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              InkWell(
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      showDate == null ? "Date Of Birth" : showDate,
-                                      style: showDate == null ? placeholderStyle : selectedValueStyle,
-                                    ),
-                                    IconButton(
-                                      icon: Icon(Icons.arrow_forward_ios_sharp),
-                                      onPressed: () {
-                                        _selectDateofBirth(context);
-                                      },
-                                      iconSize: 20,
-                                      color: Colors.grey,
-                                    )
-                                  ],
-                                ),
-                                onTap: () {
-                                  _selectDateofBirth(context);
-                                },
-                              ),
-                              SizedBox(
-                                height: 8,
-                              ),
-                              Container(
-                                height: 1,
-                                color: Colors.grey,
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 0, right: 10),
-                                child: DropdownButton(
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      county = newValue;
-                                    });
-                                  },
-                                  items: countyList.map((location) {
-                                    return DropdownMenuItem(
-                                      child: new Text(location),
-                                      value: location,
-                                    );
-                                  }).toList(),
-                                  icon: Icon(
-                                    Icons.arrow_forward_ios_sharp,
-                                    color: Colors.grey,
-                                  ),
-                                  iconSize: 25,
-                                  style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500),
-                                  value: county,
-                                  hint: Text(
-                                    "County",
-                                    style: county == null ? placeholderStyle : selectedValueStyle,
-                                  ),
-                                  isExpanded: true,
-                                  underline: SizedBox(
-                                    height: 0,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 8,
-                              ),
-                              Container(
-                                height: 1,
-                                color: Colors.grey,
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 0, right: 10),
-                                child: DropdownButton(
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      subCounty = newValue;
-                                    });
-                                  },
-                                  items: subCountyList.map((location) {
-                                    return DropdownMenuItem(
-                                      child: new Text(location),
-                                      value: location,
-                                    );
-                                  }).toList(),
-                                  icon: Icon(
-                                    Icons.arrow_forward_ios_sharp,
-                                    color: Colors.grey,
-                                  ),
-                                  iconSize: 25,
-                                  style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500),
-                                  value: subCounty,
-                                  hint: Text(
-                                    "SubCounty",
-                                    style: county == null ? placeholderStyle : selectedValueStyle,
-                                  ),
-                                  isExpanded: true,
-                                  underline: SizedBox(
-                                    height: 0,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 8,
-                              ),
-                              Container(
-                                height: 1,
-                                color: Colors.grey,
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 0, right: 10),
-                                child: DropdownButton(
-                                  onChanged: (newValue) {
-                                    setState(() {
-                                      sacco = newValue;
-                                    });
-                                  },
-                                  items: saccoList.map((location) {
-                                    return DropdownMenuItem(
-                                      child: new Text(location),
-                                      value: location,
-                                    );
-                                  }).toList(),
-                                  icon: Icon(
-                                    Icons.arrow_forward_ios_sharp,
-                                    color: Colors.grey,
-                                  ),
-                                  iconSize: 25,
-                                  style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500),
-                                  value: sacco,
-                                  hint: Text(
-                                    "Sacco",
-                                    style: sacco == null ? placeholderStyle : selectedValueStyle,
-                                  ),
-                                  isExpanded: true,
-                                  underline: SizedBox(
-                                    height: 0,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 8,
-                              ),
-                              Container(
-                                height: 1,
-                                color: Colors.grey,
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 0, right: 10),
-                                child: TextField(
-                                    // keyboardType: TextInputType.emailAddress,
-                                    controller: bakTF,
-                                    decoration: InputDecoration(
-                                      hintText: 'Bak#',
-                                      hintStyle: TextStyle(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w500),
-                                    )),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 0, right: 10),
-                                child: TextField(
-                                  controller: passwordTF,
-                                  obscureText: true,
-                                  decoration: InputDecoration(hintText: 'Password', hintStyle: TextStyle(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w500)),
-                                ),
-                              ),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(left: 0, right: 10),
-                                child: TextField(
-                                  controller: confPasswordTF,
-                                  obscureText: true,
-                                  decoration: InputDecoration(hintText: 'Confirm password', hintStyle: TextStyle(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w500)),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ),
-            Positioned(
-                left: 0,
-                right: 0,
-                bottom: 0,
-                child: Container(
-                  height: 55,
-                  color: Color(0xFF2C51BE),
-                  child: TextButton(
-                    child: Text(
-                      widget.isUpdate == true ? "UPDATE" : "NEXT",
-                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 17),
-                    ),
-                    onPressed: () {
-                      if (widget.isUpdate) {
-                        checkUpdateValidation();
-                      } else {
-                        checkValidation();
-                      }
-                    },
-                  ),
-                ))
-          ],
-        )),
+                Positioned(
+                    left: 0,
+                    right: 0,
+                    bottom: 0,
+                    child: Container(
+                      height: 55,
+                      color: Color(0xFF2C51BE),
+                      child: TextButton(
+                        child: Text(
+                          widget.isUpdate == true ? "UPDATE" : "NEXT",
+                          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 17),
+                        ),
+                        onPressed: () {
+                          if (widget.isUpdate) {
+                            checkUpdateValidation();
+                          } else {
+                            checkValidation();
+                          }
+                        },
+                      ),
+                    ))
+              ],
+            )),
       ),
     );
   }
@@ -804,13 +805,16 @@ class _PersonalDetailState extends State<PersonalDetail> {
 
                       if (widget.isUpdate) {
                         Navigator.of(context).pop();
-                        Navigator.of(context).pop();
+                        //Navigator.of(context).pop();
                       } else {
                         if (bikeDetail == true) {
                           Navigator.of(context).pop();
                         } else {
                           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => BikeDetail(false)));
                         }
+                      }
+                      if (widget.isUpdate) {
+                        sendPersonalDetail();
                       }
                     },
 
@@ -1031,7 +1035,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
   Future sendPersonalDetail() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String user_id = preferences.getString(AppConstants.UserID);
-    print('Userrrrrrrrrrr');
+    print('Userrrrrrrrrrr'+user_id);
     print(API.get_kinga_profile);
 
     Map map = {
@@ -1087,7 +1091,15 @@ class _PersonalDetailState extends State<PersonalDetail> {
               subCounty = responseData.personalDetails.subCounty;
               sacco = responseData.personalDetails.sacco;
               bakTF.text = responseData.personalDetails.bakNo;
-              // passwordTF.text = responseData.personalDetails.pa;
+              
+              String password = responseData.personalDetails.password;
+              print(password);
+              if(password==null){
+                password = "";
+              }
+              passwordTF.text =password ;
+              confPasswordTF.text =password ;
+              
               networkimage = API.baseUrl + responseData.personalDetails.profileImg;
               if (!responseData.personalDetails.birthDate.isEmpty) {
                 DateTime parseDate = new DateFormat("yyyy-MM-dd").parse(sendDOB);

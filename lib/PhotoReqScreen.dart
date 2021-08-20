@@ -9,136 +9,122 @@ import 'package:kinga/PersnolDetail.dart';
 import 'package:kinga/SurePhotoScreen.dart';
 import 'dart:io';
 
-
 class PhotoReqScreen extends StatefulWidget {
+  final bool isFromUpdate;
+
+  const PhotoReqScreen(this.isFromUpdate);
+
   @override
   _PhotoReqScreenState createState() => _PhotoReqScreenState();
 }
 
 class _PhotoReqScreenState extends State<PhotoReqScreen> {
-
   String profileImageBase64 = "";
   bool flagImgLoaded = true;
   File profImage;
   File image;
   File cropped;
 
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-          backgroundColor: Colors.white,
-          appBar: IAppBar(
-            height: 80,
-            color: Color(0xFF2C51BE),
-            child: Container(
-              margin: const EdgeInsets.only(left: 0, right: 10, top: 20),
-              child: Row(
-                children: [
-                  IconButton(
-                      icon: Icon(Icons.close),
-                      color: Colors.white,
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      }),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    "Take your profile photo",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w600),
-                  )
-                ],
-              ),
-            ),
-          ),
-          body: Stack(
+      backgroundColor: Colors.white,
+      appBar: IAppBar(
+        height: 80,
+        color: Color(0xFF2C51BE),
+        child: Container(
+          margin: const EdgeInsets.only(left: 0, right: 10, top: 20),
+          child: Row(
             children: [
-              Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(top: 20, left: 0),
-                    child: Column(
-                      children: [
-                        Container(
-                          margin: EdgeInsets.only(left: 10, right: 10),
-                          height: 30,
-                          width: MediaQuery.of(context).size.width,
-                          child: Text(
-                            "Photo Requirements",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Container(
-                          // margin: EdgeInsets.only(left: 10, right: 10),
-                          height: 1,
-                          color: Colors.grey,
-                        ),
-                        SizedBox(
-                          height: 30,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.only(left: 15, right: 15),
-                          child: Text(
-                            "1. Show your whole face and tops of your shoulder\n\n2. Take your sunglasses off\n\n3. Take your photo in a well-lit place",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.w300,
-                                fontSize: 16),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 80,
-                        ),
-                        Center(
-                          child: CircleAvatar(
-                              backgroundColor: Colors.transparent,
-                              radius: 100,
-                              child: Image(image: AssetImage('Assets/Profile Image.png'))),
-                        )
-                      ],
-                    ),
-                  )
-                ],
+              IconButton(
+                  icon: Icon(Icons.close),
+                  color: Colors.white,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }),
+              SizedBox(
+                width: 10,
               ),
-              Positioned(
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  child: Container(
-                    height: 55,
-                    color: Color(0xFF2C51BE),
-                    child: TextButton(
-                      child: Text(
-                        "TAKE PHOTO",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 17),
-                      ),
-                      onPressed: () {
-                        selectPhoto();
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(
-                        //       builder: (context) => SurePhotoScreen()),
-                        // );
-                      },
-                    ),
-                  )),
+              Text(
+                "Take your profile photo",
+                style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),
+              )
             ],
           ),
-        ));
+        ),
+      ),
+      body: Stack(
+        children: [
+          Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 20, left: 0),
+                child: Column(
+                  children: [
+                    Container(
+                      margin: EdgeInsets.only(left: 10, right: 10),
+                      height: 30,
+                      width: MediaQuery.of(context).size.width,
+                      child: Text(
+                        "Photo Requirements",
+                        style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      // margin: EdgeInsets.only(left: 10, right: 10),
+                      height: 1,
+                      color: Colors.grey,
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 15, right: 15),
+                      child: Text(
+                        "1. Show your whole face and tops of your shoulder\n\n2. Take your sunglasses off\n\n3. Take your photo in a well-lit place",
+                        style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300, fontSize: 16),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 80,
+                    ),
+                    Center(
+                      child: CircleAvatar(backgroundColor: Colors.transparent, radius: 100, child: Image(image: AssetImage('Assets/Profile Image.png'))),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+          Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Container(
+                height: 55,
+                color: Color(0xFF2C51BE),
+                child: TextButton(
+                  child: Text(
+                    "TAKE PHOTO",
+                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 17),
+                  ),
+                  onPressed: () {
+                    selectPhoto();
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //       builder: (context) => SurePhotoScreen()),
+                    // );
+                  },
+                ),
+              )),
+        ],
+      ),
+    ));
   }
 
   void selectPhoto() {
@@ -156,7 +142,8 @@ class _PhotoReqScreenState extends State<PhotoReqScreen> {
                       style: TextStyle(
                         fontSize: 16,
                         fontFamily: 'LatoBold',
-                        color: Color((0xff44536a)),)),
+                        color: Color((0xff44536a)),
+                      )),
                   new GestureDetector(
                     onTap: () {
                       Navigator.pop(context1);
@@ -183,7 +170,7 @@ class _PhotoReqScreenState extends State<PhotoReqScreen> {
                             height: 20,
                           ),
                           InkWell(
-                            onTap: ()  {
+                            onTap: () {
                               openGalleryPicker();
                               Navigator.pop(context1);
                             },
@@ -218,7 +205,8 @@ class _PhotoReqScreenState extends State<PhotoReqScreen> {
                                                   color: Colors.white,
                                                   fontSize: 16,
                                                   fontFamily: 'Lato',
-                                                  letterSpacing: 1,)))
+                                                  letterSpacing: 1,
+                                                )))
                                       ],
                                     ),
                                   ),
@@ -230,7 +218,7 @@ class _PhotoReqScreenState extends State<PhotoReqScreen> {
                             height: 10,
                           ),
                           InkWell(
-                            onTap: ()  {
+                            onTap: () {
                               openCameraPicker();
                               Navigator.pop(context1);
                             },
@@ -265,7 +253,8 @@ class _PhotoReqScreenState extends State<PhotoReqScreen> {
                                                   fontSize: 16,
                                                   fontFamily: 'Lato',
                                                   letterSpacing: 1,
-                                                  color: Colors.white,)))
+                                                  color: Colors.white,
+                                                )))
                                       ],
                                     ),
                                   ),
@@ -273,11 +262,9 @@ class _PhotoReqScreenState extends State<PhotoReqScreen> {
                               ),
                             ),
                           ),
-
                           new SizedBox(
                             height: 10,
                           ),
-
                         ],
                       ),
                       new SizedBox(
@@ -295,9 +282,7 @@ class _PhotoReqScreenState extends State<PhotoReqScreen> {
   }
 
   Future openGalleryPicker() async {
-
     await ImagePicker().pickImage(source: ImageSource.gallery).then((image) async {
-
       if (image != null) {
         File cropped = await ImageCropper.cropImage(
             sourcePath: image.path,
@@ -306,13 +291,8 @@ class _PhotoReqScreenState extends State<PhotoReqScreen> {
             maxWidth: 700,
             maxHeight: 700,
             compressFormat: ImageCompressFormat.jpg,
-            androidUiSettings: AndroidUiSettings(
-                toolbarColor: Colors.blueGrey,
-                toolbarTitle: "Crop Image",
-                statusBarColor: Colors.blueGrey.shade900,
-                backgroundColor: Colors.white,
-                hideBottomControls: true
-            ));
+            androidUiSettings:
+                AndroidUiSettings(toolbarColor: Colors.blueGrey, toolbarTitle: "Crop Image", statusBarColor: Colors.blueGrey.shade900, backgroundColor: Colors.white, hideBottomControls: true));
 
         this.setState(() {
           profImage = cropped;
@@ -320,34 +300,26 @@ class _PhotoReqScreenState extends State<PhotoReqScreen> {
           print(imageBytes);
           String base64ImageTemp = base64Encode(imageBytes);
           flagImgLoaded = false;
-          profileImageBase64 =base64ImageTemp;
+          profileImageBase64 = base64ImageTemp;
 
-          print("base 64 ================"+profileImageBase64);
+          print("base 64 ================" + profileImageBase64);
 
-          Navigator.push(
+          Navigator.pushReplacement(
             context,
-            MaterialPageRoute(
-                builder: (context) => SurePhotoScreen(profileImage: profImage, isFileUploaded: true,)),
+            MaterialPageRoute(builder: (context) => SurePhotoScreen(profImage, true, widget.isFromUpdate)),
           );
           // flagImgLoaded = false;
           // profileImageBase64;
           // profImage;
-
         });
       } else {}
-
     });
-
   }
 
   Future openCameraPicker() async {
-
     await ImagePicker().pickImage(source: ImageSource.camera).then((image) async {
-
       if (image != null) {
         try {
-
-
           cropped = await ImageCropper.cropImage(
               sourcePath: image.path,
               aspectRatio: CropAspectRatio(ratioX: 1, ratioY: 1),
@@ -355,41 +327,28 @@ class _PhotoReqScreenState extends State<PhotoReqScreen> {
               maxWidth: 700,
               maxHeight: 700,
               compressFormat: ImageCompressFormat.jpg,
-              androidUiSettings: AndroidUiSettings(
-                  toolbarColor: Colors.blueGrey,
-                  toolbarTitle: "Crop Image",
-                  statusBarColor: Colors.blueGrey.shade900,
-                  backgroundColor: Colors.white,
-                  hideBottomControls: true
-              ));
-        } catch (e) {
-
-        }
+              androidUiSettings:
+                  AndroidUiSettings(toolbarColor: Colors.blueGrey, toolbarTitle: "Crop Image", statusBarColor: Colors.blueGrey.shade900, backgroundColor: Colors.white, hideBottomControls: true));
+        } catch (e) {}
         try {
-
           this.setState(() {
-
             profImage = cropped;
             List<int> imageBytes = profImage.readAsBytesSync();
             print(imageBytes);
             String base64ImageTemp = base64Encode(imageBytes);
             flagImgLoaded = false;
             profileImageBase64 = base64ImageTemp;
-            print("base64ProfileImage ================"+profileImageBase64);
+            print("base64ProfileImage ================" + profileImageBase64);
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(
-                  builder: (context) => SurePhotoScreen(profileImage: profImage, isFileUploaded: true,)),
+              MaterialPageRoute(builder: (context) => SurePhotoScreen(profImage, true, widget.isFromUpdate)),
             );
           });
         } catch (e) {
           //  ShowToast.showToast(Colors.green,"error 2 "+ e.toString());
 
         }
-      } else {
-
-      }
+      } else {}
     });
   }
-
 }

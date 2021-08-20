@@ -32,6 +32,7 @@ class PersonalDetails {
   String county;
   String subCounty;
   String sacco;
+  String password;
   String bakNo;
 
   PersonalDetails(
@@ -42,6 +43,7 @@ class PersonalDetails {
         this.county,
         this.subCounty,
         this.sacco,
+        this.password,
         this.bakNo});
 
   PersonalDetails.fromJson(Map<String, dynamic> json) {
@@ -52,6 +54,7 @@ class PersonalDetails {
     county = json['county'];
     subCounty = json['sub_county'];
     sacco = json['sacco'];
+    password = json['password'];
     bakNo = json['bak_no'];
   }
 
@@ -64,6 +67,7 @@ class PersonalDetails {
     data['county'] = this.county;
     data['sub_county'] = this.subCounty;
     data['sacco'] = this.sacco;
+    data['password'] = this.password;
     data['bak_no'] = this.bakNo;
     return data;
   }

@@ -11,7 +11,6 @@ import 'package:kinga/Data/BikeDetailResponse.dart';
 import 'package:kinga/Data/CountyResponse.dart';
 import 'package:kinga/Data/SignUpResponse.dart';
 import 'package:kinga/KingaProfile.dart';
-import 'package:kinga/PhotoReqScreen.dart';
 import 'package:kinga/Utils/AppConstant.dart';
 import 'package:kinga/Utils/CustomAlertDialogue.dart';
 import 'package:kinga/Utils/OkDialogue.dart';
@@ -60,7 +59,7 @@ class _BikeDetailState extends State<BikeDetail> {
     numberTF.text = numberPlate;
     if (widget.isUpdate) {
       sendBikeDetail();
-    } else {}
+    } 
   }
 
   @override
@@ -94,7 +93,13 @@ class _BikeDetailState extends State<BikeDetail> {
         backgroundColor: Colors.white,
         body: WillPopScope(
             onWillPop: () {
-              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => DashboardPage()), (Route<dynamic> route) => false);
+              
+              if(widget.isUpdate){
+                Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => DashboardPage()), (Route<dynamic> route) => false);
+              }else{
+                Navigator.pop(context);
+              }
+              
             },
             child: Container(
               height: MediaQuery.of(context).size.height,
@@ -152,7 +157,7 @@ class _BikeDetailState extends State<BikeDetail> {
                                                             isBikeDetail = true;
                                                             Navigator.push(
                                                               context,
-                                                              MaterialPageRoute(builder: (context) => PhotoReqScreen()),
+                                                              MaterialPageRoute(builder: (context) => BikePhotoReqScreen(widget.isUpdate)),
                                                             );
                                                           })
                                                       : InkWell(
@@ -172,7 +177,7 @@ class _BikeDetailState extends State<BikeDetail> {
                                                             isBikeDetail = true;
                                                             Navigator.push(
                                                               context,
-                                                              MaterialPageRoute(builder: (context) => BikePhotoReqScreen()),
+                                                              MaterialPageRoute(builder: (context) => BikePhotoReqScreen(widget.isUpdate)),
                                                             );
                                                           },
                                                         ),
@@ -194,7 +199,7 @@ class _BikeDetailState extends State<BikeDetail> {
                                                     isBikeDetail = true;
                                                     Navigator.push(
                                                       context,
-                                                      MaterialPageRoute(builder: (context) => BikePhotoReqScreen()),
+                                                      MaterialPageRoute(builder: (context) => BikePhotoReqScreen(widget.isUpdate)),
                                                     );
                                                   },
                                                 ),
@@ -202,7 +207,7 @@ class _BikeDetailState extends State<BikeDetail> {
                                             width: 30,
                                           ),
                                           Text(
-                                            "Upload profile photo",
+                                            "Upload bike photo",
                                             style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 20),
                                           ),
                                         ],
@@ -500,15 +505,20 @@ class _BikeDetailState extends State<BikeDetail> {
                       SharedPreferences preferences = await SharedPreferences.getInstance();
                       bool bikeDetail = preferences.getBool(AppConstants.kingaProfile);
                       uploadedImage = null;
+
+                     
                       if (widget.isUpdate) {
                         Navigator.of(context).pop();
-                        Navigator.of(context).pop();
+                        //Navigator.of(context).pop();
                       } else {
                         if (bikeDetail == true) {
                           goBackToPage();
                         } else {
                           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => KingaProfileScreen(false)));
                         }
+                      }
+                      if (widget.isUpdate) {
+                        sendBikeDetail();
                       }
                     },
                     color: Color(0xFF2C51BE),
