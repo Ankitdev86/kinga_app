@@ -247,10 +247,7 @@ class _EmergencyScreenState extends State<EmergencyScreen> {
                                   my_context: context,
                                 ));
                       } else {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (context) => DashboardPage()),
-                        );
+                        Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => DashboardPage()), (Route<dynamic> route) => false);
                       }
                     },
                   ),

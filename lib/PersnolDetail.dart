@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:kinga/BikeDetailScreen.dart';
+import 'package:kinga/DashboardScreen.dart';
 import 'package:kinga/Data/API.dart';
 import 'package:kinga/Data/CountyResponse.dart';
 import 'package:kinga/Data/PersonaldetailResponse.dart';
@@ -21,7 +22,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'Appbar.dart';
 
 class PersonalDetail extends StatefulWidget {
-
   bool isUpdate;
 
   PersonalDetail(this.isUpdate);
@@ -43,10 +43,8 @@ class _PersonalDetailState extends State<PersonalDetail> {
   List<String> subCountyList = [];
   List<String> saccoList = [];
 
-  TextStyle placeholderStyle =
-  TextStyle(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w500);
-  TextStyle selectedValueStyle =
-  TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400);
+  TextStyle placeholderStyle = TextStyle(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w500);
+  TextStyle selectedValueStyle = TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.w400);
 
   String gender; // Option 2
   String county;
@@ -61,7 +59,6 @@ class _PersonalDetailState extends State<PersonalDetail> {
   void initState() {
     // TODO: implement initState
     super.initState();
-
 
     print(API.get_county_list);
     if (dateOfBirth != null) {
@@ -99,10 +96,8 @@ class _PersonalDetailState extends State<PersonalDetail> {
       getCountyList(API.get_county_list, context);
       getSubCountyList(API.get_sub_county_list, context);
       getSaccoList(API.get_sacco_list, context);
-
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -127,24 +122,27 @@ class _PersonalDetailState extends State<PersonalDetail> {
                 ),
                 Text(
                   "Personal Details",
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.w600),
+                  style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.w600),
                 )
               ],
             ),
           ),
         ),
-        body: Stack(
+        body:
+            WillPopScope(
+    onWillPop: () {
+      Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => DashboardPage()), (Route<dynamic> route) => false);
+
+    },
+    child:
+    Stack(
           children: [
             SingleChildScrollView(
               child: Container(
                 // height: MediaQuery.of(context).size.height,
                 color: Colors.white,
                 child: Padding(
-                  padding: EdgeInsets.only(
-                      left: 10, right: 10, top: 20, bottom: 100),
+                  padding: EdgeInsets.only(left: 10, right: 10, top: 20, bottom: 100),
                   child: SingleChildScrollView(
                     child: Column(
                       children: [
@@ -154,10 +152,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
                           width: MediaQuery.of(context).size.width,
                           child: Text(
                             "Personal Details",
-                            style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 20,
-                                fontWeight: FontWeight.w600),
+                            style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w600),
                           ),
                         ),
                         SizedBox(
@@ -173,100 +168,87 @@ class _PersonalDetailState extends State<PersonalDetail> {
                         ),
                         Row(
                           children: [
-                            uploadedImage == null ? Container(
-                                height: 60,
-                                width: 60,
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(30),
-                                    color: Color(0xFFECECEC)),
-                                child: networkimage == null || networkimage.isEmpty ? IconButton(
-                                    icon: Icon(
-                                      Icons.camera_alt,
-                                      color: Colors.black,
-                                      size: 30,
-                                    ),
-                                    onPressed: () {
+                            uploadedImage == null
+                                ? Container(
+                                    height: 60,
+                                    width: 60,
+                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(30), color: Color(0xFFECECEC)),
+                                    child: networkimage == null || networkimage.isEmpty
+                                        ? IconButton(
+                                            icon: Icon(
+                                              Icons.camera_alt,
+                                              color: Colors.black,
+                                              size: 30,
+                                            ),
+                                            onPressed: () {
+                                              assignValue();
+                                              isBikeDetail = false;
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(builder: (context) => PhotoReqScreen()),
+                                              );
+                                            })
+                                        : InkWell(
+                                            child: Container(
+                                                height: 60,
+                                                width: 60,
+                                                // margin: EdgeInsets.only(top: 50,left: 10,right: 10),
+                                                decoration: new BoxDecoration(
+                                                    shape: BoxShape.circle,
+                                                    border: Border.all(
+                                                      color: Colors.blueGrey[100], //                   <--- border color
+                                                      width: 2,
+                                                    ),
+                                                    image: new DecorationImage(
+                                                      fit: BoxFit.fill,
+                                                      image: NetworkImage(networkimage),
+                                                    ))),
+                                            onTap: () {
+                                              assignValue();
+                                              isBikeDetail = false;
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(builder: (context) => PhotoReqScreen()),
+                                              );
+                                            },
+                                          ))
+                                : InkWell(
+                                    child: Container(
+                                        height: 60,
+                                        width: 60,
+                                        // margin: EdgeInsets.only(top: 50,left: 10,right: 10),
+                                        decoration: new BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            border: Border.all(
+                                              color: Colors.blueGrey[100], //                   <--- border color
+                                              width: 2,
+                                            ),
+                                            image: new DecorationImage(fit: BoxFit.fill, image: FileImage(uploadedImage)))),
+                                    onTap: () {
                                       assignValue();
                                       isBikeDetail = false;
                                       Navigator.push(
                                         context,
-                                        MaterialPageRoute(
-                                            builder: (context) => PhotoReqScreen()),
+                                        MaterialPageRoute(builder: (context) => PhotoReqScreen()),
                                       );
-                                    }) :
-                                InkWell(
-                                  child: Container(
-                                      height : 60,width:60,
-                                      // margin: EdgeInsets.only(top: 50,left: 10,right: 10),
-                                      decoration: new BoxDecoration(
-                                          shape: BoxShape.circle,
-                                          border: Border.all(
-                                            color: Colors.blueGrey[100], //                   <--- border color
-                                            width: 2,
-                                          ),
-                                          image: new DecorationImage(
-                                              fit: BoxFit.fill,
-                                              image: NetworkImage(networkimage),
-                                          )
-                                      )),
-                                  onTap: () {
-                                    assignValue();
-                                    isBikeDetail = false;
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (context) => PhotoReqScreen()),
-                                    );
-                                  },
-                                )
-
-                            ) : InkWell(
-                              child: Container(
-                                  height : 60,width:60,
-                                  // margin: EdgeInsets.only(top: 50,left: 10,right: 10),
-                                  decoration: new BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      border: Border.all(
-                                        color: Colors.blueGrey[100], //                   <--- border color
-                                        width: 2,
-                                      ),
-                                      image: new DecorationImage(
-                                          fit: BoxFit.fill,
-                                          image:  FileImage(uploadedImage)
-                                      )
-                                  )),
-                              onTap: () {
-                                assignValue();
-                                isBikeDetail = false;
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => PhotoReqScreen()),
-                                );
-                              },
-                            ),
-
+                                    },
+                                  ),
                             SizedBox(
                               width: 30,
                             ),
                             Text(
                               "Upload profile photo",
-                              style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.w500,
-                                  fontSize: 20),
+                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.w500, fontSize: 20),
                             ),
                           ],
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(
-                              left: 10, right: 10, top: 30),
+                          padding: const EdgeInsets.only(left: 10, right: 10, top: 30),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
                             children: [
                               Padding(
-                                padding:
-                                const EdgeInsets.only(left: 0, right: 10),
+                                padding: const EdgeInsets.only(left: 0, right: 10),
                                 child: DropdownButton(
                                   onChanged: (newValue) {
                                     setState(() {
@@ -288,10 +270,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
                                   value: gender,
                                   hint: Text(
                                     "Gender",
-                                    style: TextStyle(
-                                        color: Colors.grey,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500),
+                                    style: TextStyle(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w500),
                                   ),
                                   isExpanded: true,
                                   underline: SizedBox(
@@ -311,20 +290,17 @@ class _PersonalDetailState extends State<PersonalDetail> {
                               ),
                               InkWell(
                                 child: Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                   children: [
                                     Text(
-                                      showDate == null
-                                          ? "Date Of Birth"
-                                          : showDate,
-                                      style: showDate == null
-                                          ? placeholderStyle
-                                          : selectedValueStyle,
+                                      showDate == null ? "Date Of Birth" : showDate,
+                                      style: showDate == null ? placeholderStyle : selectedValueStyle,
                                     ),
                                     IconButton(
                                       icon: Icon(Icons.arrow_forward_ios_sharp),
-                                      onPressed: () {},
+                                      onPressed: () {
+                                        _selectDateofBirth(context);
+                                      },
                                       iconSize: 20,
                                       color: Colors.grey,
                                     )
@@ -345,8 +321,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
                                 height: 15,
                               ),
                               Padding(
-                                padding:
-                                const EdgeInsets.only(left: 0, right: 10),
+                                padding: const EdgeInsets.only(left: 0, right: 10),
                                 child: DropdownButton(
                                   onChanged: (newValue) {
                                     setState(() {
@@ -364,10 +339,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
                                     color: Colors.grey,
                                   ),
                                   iconSize: 25,
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500),
+                                  style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500),
                                   value: county,
                                   hint: Text(
                                     "County",
@@ -390,8 +362,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
                                 height: 15,
                               ),
                               Padding(
-                                padding:
-                                const EdgeInsets.only(left: 0, right: 10),
+                                padding: const EdgeInsets.only(left: 0, right: 10),
                                 child: DropdownButton(
                                   onChanged: (newValue) {
                                     setState(() {
@@ -409,10 +380,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
                                     color: Colors.grey,
                                   ),
                                   iconSize: 25,
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500),
+                                  style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500),
                                   value: subCounty,
                                   hint: Text(
                                     "SubCounty",
@@ -435,8 +403,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
                                 height: 15,
                               ),
                               Padding(
-                                padding:
-                                const EdgeInsets.only(left: 0, right: 10),
+                                padding: const EdgeInsets.only(left: 0, right: 10),
                                 child: DropdownButton(
                                   onChanged: (newValue) {
                                     setState(() {
@@ -454,10 +421,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
                                     color: Colors.grey,
                                   ),
                                   iconSize: 25,
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w500),
+                                  style: TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.w500),
                                   value: sacco,
                                   hint: Text(
                                     "Sacco",
@@ -480,51 +444,35 @@ class _PersonalDetailState extends State<PersonalDetail> {
                                 height: 15,
                               ),
                               Padding(
-                                padding:
-                                const EdgeInsets.only(left: 0, right: 10),
+                                padding: const EdgeInsets.only(left: 0, right: 10),
                                 child: TextField(
-                                  // keyboardType: TextInputType.emailAddress,
+                                    // keyboardType: TextInputType.emailAddress,
                                     controller: bakTF,
                                     decoration: InputDecoration(
                                       hintText: 'Bak#',
-                                      hintStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500),
+                                      hintStyle: TextStyle(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w500),
                                     )),
                               ),
                               SizedBox(
                                 height: 15,
                               ),
                               Padding(
-                                padding:
-                                const EdgeInsets.only(left: 0, right: 10),
+                                padding: const EdgeInsets.only(left: 0, right: 10),
                                 child: TextField(
                                   controller: passwordTF,
                                   obscureText: true,
-                                  decoration: InputDecoration(
-                                      hintText: 'Password',
-                                      hintStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500)),
+                                  decoration: InputDecoration(hintText: 'Password', hintStyle: TextStyle(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w500)),
                                 ),
                               ),
                               SizedBox(
                                 height: 15,
                               ),
                               Padding(
-                                padding:
-                                const EdgeInsets.only(left: 0, right: 10),
+                                padding: const EdgeInsets.only(left: 0, right: 10),
                                 child: TextField(
                                   controller: confPasswordTF,
                                   obscureText: true,
-                                  decoration: InputDecoration(
-                                      hintText: 'Confirm password',
-                                      hintStyle: TextStyle(
-                                          color: Colors.grey,
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500)),
+                                  decoration: InputDecoration(hintText: 'Confirm password', hintStyle: TextStyle(color: Colors.grey, fontSize: 18, fontWeight: FontWeight.w500)),
                                 ),
                               ),
                             ],
@@ -546,10 +494,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
                   child: TextButton(
                     child: Text(
                       widget.isUpdate == true ? "UPDATE" : "NEXT",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 17),
+                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 17),
                     ),
                     onPressed: () {
                       if (widget.isUpdate) {
@@ -561,10 +506,9 @@ class _PersonalDetailState extends State<PersonalDetail> {
                   ),
                 ))
           ],
-        ),
+        )),
       ),
     );
-
   }
 
   void assignValue() {
@@ -596,8 +540,6 @@ class _PersonalDetailState extends State<PersonalDetail> {
     selectedbak = bakTF.text;
     selectedpassword = passwordTF.text;
     selectedconPassword = confPasswordTF.text;
-
-
   }
 
   void selectDateofBirth() {
@@ -607,11 +549,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
   Future<Null> _selectDateofBirth(BuildContext context) async {
     String strmonth = "";
     String strday = "";
-    final DateTime picked = await showDatePicker(
-        context: context,
-        initialDate: DateTime.now(),
-        firstDate: DateTime(1950),
-        lastDate: DateTime.now());
+    final DateTime picked = await showDatePicker(context: context, initialDate: DateTime.now(), firstDate: DateTime(1950), lastDate: DateTime.now());
 
     if (picked != null)
       setState(() {
@@ -624,7 +562,6 @@ class _PersonalDetailState extends State<PersonalDetail> {
         if (strday.length == 1) {
           strday = "0" + strday;
         }
-
 
         // mm/dd/yyyy
         //2000-12-12
@@ -641,82 +578,82 @@ class _PersonalDetailState extends State<PersonalDetail> {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: 'Please Enter Email Address',
-            description: "",
-            my_context: context,
-          ));
+                title: 'Please Select Gender',
+                description: "",
+                my_context: context,
+              ));
     } else if (showDate == null || showDate.length == 0) {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: 'Please Select Date Of Birth',
-            description: "",
-            my_context: context,
-          ));
+                title: 'Please Select Date Of Birth',
+                description: "",
+                my_context: context,
+              ));
     } else if (county == null || county.length == 0) {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: 'Please Select County',
-            description: "",
-            my_context: context,
-          ));
+                title: 'Please Select County',
+                description: "",
+                my_context: context,
+              ));
     } else if (subCounty == null || subCounty.length == 0) {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: 'Please Select Subcounty',
-            description: "",
-            my_context: context,
-          ));
+                title: 'Please Select Sub county',
+                description: "",
+                my_context: context,
+              ));
     } else if (sacco == null || sacco.length == 0) {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: 'Please Select Sacco',
-            description: "",
-            my_context: context,
-          ));
+                title: 'Please Select Sacco',
+                description: "",
+                my_context: context,
+              ));
     } else if (bakTF.text.length == 0) {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: 'Please Enter Bak',
-            description: "",
-            my_context: context,
-          ));
+                title: 'Please Enter Bak',
+                description: "",
+                my_context: context,
+              ));
     } else if (passwordTF.text.length == 0) {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: 'Please Enter Password',
-            description: "",
-            my_context: context,
-          ));
-    } else if (passwordTF.text.length < 6) {
+                title: 'Please Enter Password',
+                description: "",
+                my_context: context,
+              ));
+    } else if (passwordTF.text.length <= 6) {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: 'Password Length Must Be Greater Than 6 Digit',
-            description: "",
-            my_context: context,
-          ));
+                title: 'Password Length Must Be Greater Than 6 Digit',
+                description: "",
+                my_context: context,
+              ));
     } else if (passwordTF.text != confPasswordTF.text) {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: 'Password Do Not Match',
-            description: "",
-            my_context: context,
-          ));
+                title: 'Password Do Not Match',
+                description: "",
+                my_context: context,
+              ));
     } else if (uploadedImage == null) {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: 'Please Upload Profile image',
-            description: "",
-            my_context: context,
-          ));
+                title: 'Please Upload Profile image',
+                description: "",
+                my_context: context,
+              ));
     } else {
       getData();
     }
@@ -727,50 +664,50 @@ class _PersonalDetailState extends State<PersonalDetail> {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: 'Please Enter Email Address',
-            description: "",
-            my_context: context,
-          ));
+                title: 'Please Select Gender',
+                description: "",
+                my_context: context,
+              ));
     } else if (showDate == null || showDate.length == 0) {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: 'Please Select Date Of Birth',
-            description: "",
-            my_context: context,
-          ));
+                title: 'Please Select Date Of Birth',
+                description: "",
+                my_context: context,
+              ));
     } else if (county == null || county.length == 0) {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: 'Please Select County',
-            description: "",
-            my_context: context,
-          ));
+                title: 'Please Select County',
+                description: "",
+                my_context: context,
+              ));
     } else if (subCounty == null || subCounty.length == 0) {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: 'Please Select Subcounty',
-            description: "",
-            my_context: context,
-          ));
+                title: 'Please Select Sub county',
+                description: "",
+                my_context: context,
+              ));
     } else if (sacco == null || sacco.length == 0) {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: 'Please Select Sacco',
-            description: "",
-            my_context: context,
-          ));
+                title: 'Please Select Sacco',
+                description: "",
+                my_context: context,
+              ));
     } else if (bakTF.text.length == 0) {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: 'Please Enter Bak',
-            description: "",
-            my_context: context,
-          ));
+                title: 'Please Enter Bak',
+                description: "",
+                my_context: context,
+              ));
     } else {
       getData();
     }
@@ -779,7 +716,7 @@ class _PersonalDetailState extends State<PersonalDetail> {
   Future getData() async {
     SharedPreferences preferences = await SharedPreferences.getInstance();
     String user_id = preferences.getString(AppConstants.UserID);
-     Map map;
+    Map map;
     if (widget.isUpdate) {
       map = {
         "user_id": user_id,
@@ -792,7 +729,6 @@ class _PersonalDetailState extends State<PersonalDetail> {
         "birth_date": sendDOB,
         "profile_img": ""
       };
-
     } else {
       List<int> imageBytes = uploadedImage.readAsBytesSync();
       print(imageBytes);
@@ -810,29 +746,21 @@ class _PersonalDetailState extends State<PersonalDetail> {
         "birth_date": sendDOB,
         "profile_img": profileImageBase64
       };
-
-
     }
-
 
     if (progressDialog == false) {
       progressDialog = true;
-      _progressDialog.showProgressDialog(context,
-          textToBeDisplayed: 'Please wait...', dismissAfter: null);
+      _progressDialog.showProgressDialog(context, textToBeDisplayed: 'Please wait...', dismissAfter: null);
     }
 
     await addPersonalDetail(API.personalDetail, map, context);
   }
 
-  Future<http.Response> addPersonalDetail(
-      String url, Map jsonMap, BuildContext context) async {
+  Future<http.Response> addPersonalDetail(String url, Map jsonMap, BuildContext context) async {
     var body = json.encode(jsonMap);
     var responseInternet;
     try {
-      responseInternet = await http
-          .post(Uri.parse(url),
-          headers: {"Content-Type": "application/json"}, body: body)
-          .then((http.Response response) {
+      responseInternet = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body).then((http.Response response) {
         final int statusCode = response.statusCode;
         print(response);
         _progressDialog.dismissProgressDialog(context);
@@ -842,10 +770,10 @@ class _PersonalDetailState extends State<PersonalDetail> {
           showDialog(
               context: context,
               builder: (BuildContext context1) => OKDialogBox(
-                title: 'Check your internet connections and settings !',
-                description: "",
-                my_context: context,
-              ));
+                    title: 'Check your internet connections and settings !',
+                    description: "",
+                    my_context: context,
+                  ));
 
           throw new Exception("Error while fetching data");
         } else {
@@ -881,16 +809,9 @@ class _PersonalDetailState extends State<PersonalDetail> {
                         if (bikeDetail == true) {
                           Navigator.of(context).pop();
                         } else {
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(builder: (context) => BikeDetail(false)));
-
+                          Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => BikeDetail(false)));
                         }
-
                       }
-
-
-
                     },
 
                     // => Navigator.pushReplacement(
@@ -906,10 +827,10 @@ class _PersonalDetailState extends State<PersonalDetail> {
             showDialog(
                 context: context,
                 builder: (BuildContext context1) => OKDialogBox(
-                  title: '' + responseData.msg,
-                  description: "",
-                  my_context: context,
-                ));
+                      title: '' + responseData.msg,
+                      description: "",
+                      my_context: context,
+                    ));
           }
         }
       });
@@ -920,22 +841,18 @@ class _PersonalDetailState extends State<PersonalDetail> {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: 'Check your internet connections and settings !',
-            description: "",
-            my_context: context,
-          ));
+                title: 'Check your internet connections and settings !',
+                description: "",
+                my_context: context,
+              ));
     }
     return responseInternet;
   }
 
-
-  Future<http.Response> getCountyList(
-      String url, BuildContext context) async {
+  Future<http.Response> getCountyList(String url, BuildContext context) async {
     var responseInternet;
     try {
-      responseInternet = await http
-          .get(Uri.parse(url))
-          .then((http.Response response) {
+      responseInternet = await http.get(Uri.parse(url)).then((http.Response response) {
         final int statusCode = response.statusCode;
         print(response);
         _progressDialog.dismissProgressDialog(context);
@@ -945,10 +862,10 @@ class _PersonalDetailState extends State<PersonalDetail> {
           showDialog(
               context: context,
               builder: (BuildContext context1) => OKDialogBox(
-                title: 'Check your internet connections and settings !',
-                description: "",
-                my_context: context,
-              ));
+                    title: 'Check your internet connections and settings !',
+                    description: "",
+                    my_context: context,
+                  ));
 
           throw new Exception("Error while fetching data");
         } else {
@@ -970,10 +887,10 @@ class _PersonalDetailState extends State<PersonalDetail> {
             showDialog(
                 context: context,
                 builder: (BuildContext context1) => OKDialogBox(
-                  title: '' + responseData.msg,
-                  description: "",
-                  my_context: context,
-                ));
+                      title: '' + responseData.msg,
+                      description: "",
+                      my_context: context,
+                    ));
           }
         }
       });
@@ -984,21 +901,18 @@ class _PersonalDetailState extends State<PersonalDetail> {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: e.toString(),
-            description: "",
-            my_context: context,
-          ));
+                title: e.toString(),
+                description: "",
+                my_context: context,
+              ));
     }
     return responseInternet;
   }
 
-  Future<http.Response> getSubCountyList(
-      String url, BuildContext context) async {
+  Future<http.Response> getSubCountyList(String url, BuildContext context) async {
     var responseInternet;
     try {
-      responseInternet = await http
-          .get(Uri.parse(url))
-          .then((http.Response response) {
+      responseInternet = await http.get(Uri.parse(url)).then((http.Response response) {
         final int statusCode = response.statusCode;
         print(response);
         _progressDialog.dismissProgressDialog(context);
@@ -1008,10 +922,10 @@ class _PersonalDetailState extends State<PersonalDetail> {
           showDialog(
               context: context,
               builder: (BuildContext context1) => OKDialogBox(
-                title: 'Check your internet connections and settings !',
-                description: "",
-                my_context: context,
-              ));
+                    title: 'Check your internet connections and settings !',
+                    description: "",
+                    my_context: context,
+                  ));
 
           throw new Exception("Error while fetching data");
         } else {
@@ -1028,16 +942,15 @@ class _PersonalDetailState extends State<PersonalDetail> {
               subCountyList = responseData.sub_county_list;
               print("SSSSSUUUUUBBBBBCCCCOOOOOOUUUUUNNNNNNTTTTTYYYYYYY");
               print(subCountyList);
-
             });
           } else {
             showDialog(
                 context: context,
                 builder: (BuildContext context1) => OKDialogBox(
-                  title: '' + responseData.msg,
-                  description: "",
-                  my_context: context,
-                ));
+                      title: '' + responseData.msg,
+                      description: "",
+                      my_context: context,
+                    ));
           }
         }
       });
@@ -1048,21 +961,18 @@ class _PersonalDetailState extends State<PersonalDetail> {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: e.toString(),
-            description: "",
-            my_context: context,
-          ));
+                title: e.toString(),
+                description: "",
+                my_context: context,
+              ));
     }
     return responseInternet;
   }
 
-  Future<http.Response> getSaccoList(
-      String url, BuildContext context) async {
+  Future<http.Response> getSaccoList(String url, BuildContext context) async {
     var responseInternet;
     try {
-      responseInternet = await http
-          .get(Uri.parse(url))
-          .then((http.Response response) {
+      responseInternet = await http.get(Uri.parse(url)).then((http.Response response) {
         final int statusCode = response.statusCode;
         print(response);
         _progressDialog.dismissProgressDialog(context);
@@ -1072,10 +982,10 @@ class _PersonalDetailState extends State<PersonalDetail> {
           showDialog(
               context: context,
               builder: (BuildContext context1) => OKDialogBox(
-                title: 'Check your internet connections and settings !',
-                description: "",
-                my_context: context,
-              ));
+                    title: 'Check your internet connections and settings !',
+                    description: "",
+                    my_context: context,
+                  ));
 
           throw new Exception("Error while fetching data");
         } else {
@@ -1096,10 +1006,10 @@ class _PersonalDetailState extends State<PersonalDetail> {
             showDialog(
                 context: context,
                 builder: (BuildContext context1) => OKDialogBox(
-                  title: '' + responseData.msg,
-                  description: "",
-                  my_context: context,
-                ));
+                      title: '' + responseData.msg,
+                      description: "",
+                      my_context: context,
+                    ));
           }
         }
       });
@@ -1110,10 +1020,10 @@ class _PersonalDetailState extends State<PersonalDetail> {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: e.toString(),
-            description: "",
-            my_context: context,
-          ));
+                title: e.toString(),
+                description: "",
+                my_context: context,
+              ));
     }
     return responseInternet;
   }
@@ -1129,24 +1039,18 @@ class _PersonalDetailState extends State<PersonalDetail> {
     };
 
     if (progressDialog == false) {
-
       progressDialog = true;
-      _progressDialog.showProgressDialog(context,
-          textToBeDisplayed: 'Please wait...', dismissAfter: null);
+      _progressDialog.showProgressDialog(context, textToBeDisplayed: 'Please wait...', dismissAfter: null);
     }
 
     await getPersonalProfile(API.get_personal_details, map, context);
   }
 
-  Future<http.Response> getPersonalProfile(
-      String url, Map jsonMap, BuildContext context) async {
+  Future<http.Response> getPersonalProfile(String url, Map jsonMap, BuildContext context) async {
     var body = json.encode(jsonMap);
     var responseInternet;
     try {
-      responseInternet = await http
-          .post(Uri.parse(url),
-          headers: {"Content-Type": "application/json"}, body: body)
-          .then((http.Response response) {
+      responseInternet = await http.post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body).then((http.Response response) {
         final int statusCode = response.statusCode;
         print(response);
         _progressDialog.dismissProgressDialog(context);
@@ -1157,10 +1061,10 @@ class _PersonalDetailState extends State<PersonalDetail> {
           showDialog(
               context: context,
               builder: (BuildContext context1) => OKDialogBox(
-                title: 'Check your internet connections and settings !',
-                description: "",
-                my_context: context,
-              ));
+                    title: 'Check your internet connections and settings !',
+                    description: "",
+                    my_context: context,
+                  ));
 
           throw new Exception("Error while fetching data");
         } else {
@@ -1186,25 +1090,22 @@ class _PersonalDetailState extends State<PersonalDetail> {
               // passwordTF.text = responseData.personalDetails.pa;
               networkimage = API.baseUrl + responseData.personalDetails.profileImg;
               if (!responseData.personalDetails.birthDate.isEmpty) {
-                DateTime parseDate =
-                new DateFormat("yyyy-MM-dd").parse(sendDOB);
+                DateTime parseDate = new DateFormat("yyyy-MM-dd").parse(sendDOB);
                 var inputDate = DateTime.parse(parseDate.toString());
                 var outputFormat = DateFormat('dd/MM/yyyy');
                 var outputDate = outputFormat.format(inputDate);
                 showDate = outputDate;
                 print(outputDate);
-
               }
-
             });
           } else {
             showDialog(
                 context: context,
                 builder: (BuildContext context1) => OKDialogBox(
-                  title: '' + responseData.msg,
-                  description: "",
-                  my_context: context,
-                ));
+                      title: '' + responseData.msg,
+                      description: "",
+                      my_context: context,
+                    ));
           }
         }
       });
@@ -1215,13 +1116,11 @@ class _PersonalDetailState extends State<PersonalDetail> {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-            title: e.toString(),
-            description: "",
-            my_context: context,
-          ));
+                title: e.toString(),
+                description: "",
+                my_context: context,
+              ));
     }
     return responseInternet;
   }
-
-
 }

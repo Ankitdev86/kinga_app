@@ -1093,6 +1093,11 @@ class _DashboardPageState extends State<DashboardPage> {
   double dropLng = 0.0;
 
   void showStartTripDialog(String shortAddress, String address, String username, String profileImage, String km) {
+    txtName.clear();
+    txtPhoneNo.clear();
+    txtCost.clear();
+    
+    
     showModalBottomSheet(
         backgroundColor: Colors.transparent,
         isScrollControlled: true,
@@ -1441,6 +1446,14 @@ class _DashboardPageState extends State<DashboardPage> {
                                                     context: context,
                                                     builder: (BuildContext context1) => OKDialogBox(
                                                           title: 'Please Enter Phone Number',
+                                                          description: "",
+                                                          my_context: context,
+                                                        ));
+                                              } else if (txtPhoneNo.text.length !=10) {
+                                                showDialog(
+                                                    context: context,
+                                                    builder: (BuildContext context1) => OKDialogBox(
+                                                          title: 'Please Enter 10 Digit Phone Number',
                                                           description: "",
                                                           my_context: context,
                                                         ));

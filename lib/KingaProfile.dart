@@ -313,7 +313,7 @@ class _KingaProfileScreenState extends State<KingaProfileScreen> {
       showDialog(
           context: context,
           builder: (BuildContext context1) => OKDialogBox(
-                title: 'Wristband Number Do Not Match',
+                title: 'Wristband Number Does Not Match',
                 description: "",
                 my_context: context,
               ));

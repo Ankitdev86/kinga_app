@@ -465,7 +465,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 context: context,
                 title: "",
                 desc: "Email id already exist",
-                image: Image.asset("Assets/success.png"),
+                image: Image.asset("Assets/warning.png"),
                 buttons: [
                   DialogButton(
                     child: Text(

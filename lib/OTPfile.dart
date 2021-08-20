@@ -129,10 +129,9 @@ class _VerificationPageState extends State<VerificationPage> {
                         splashColor: Colors.blue.withAlpha(100),
                         padding: EdgeInsets.only(top: 5, bottom: 5, left: 10, right: 10),
                         onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => PersonalDetail(false)),
-                          );
+                          
+                         sendOtp();
+                          
                         },
                         child: Center(
                           child: Text(
@@ -149,6 +148,98 @@ class _VerificationPageState extends State<VerificationPage> {
       ),
     ));
   }
+
+
+  Future sendOtp() async {
+
+    Map map = {
+      "mobile_no": widget.Phone
+    };
+
+    if (progressDialog == false) {
+      progressDialog = true;
+      _progressDialog.showProgressDialog(context,
+          textToBeDisplayed: 'Please wait...', dismissAfter: null);
+    }
+
+    await sendOtpRequestCall(API.verifyOTP, map, context);
+  }
+
+  Future<http.Response> sendOtpRequestCall(
+      String url, Map jsonMap, BuildContext context) async {
+    var body = json.encode(jsonMap);
+    var responseInternet;
+    try {
+      responseInternet = await http
+          .post(Uri.parse(url), headers: {"Content-Type": "application/json"}, body: body)
+          .then((http.Response response) {
+        final int statusCode = response.statusCode;
+        print(response);
+        _progressDialog.dismissProgressDialog(context);
+        progressDialog = false;
+
+        if (statusCode < 200 || statusCode > 400 || json == null) {
+          showDialog(
+              context: context,
+              builder: (BuildContext context1) => OKDialogBox(
+                title: 'Check your internet connections and settings !',
+                description: "",
+                my_context: context,
+              ));
+
+          throw new Exception("Error while fetching data");
+        } else {
+          print(response.body);
+          VerifyOTP responseData = new VerifyOTP();
+          responseData.fromJson(json.decode(response.body));
+          Map<String, dynamic> data = responseData.toJson();
+          if (responseData.status == "1") {
+            _progressDialog.dismissProgressDialog(context);
+            progressDialog = false;
+            print(data);
+
+            setState(() {});
+            Alert(
+                context: context,
+                title: "",
+                desc: "OTP sent Success",
+                image: Image.asset("Assets/success.png"),
+                buttons: [
+                  DialogButton(
+                    child: Text(
+                      "OK",
+                      style: TextStyle(color: Colors.white, fontSize: 16),
+                    ),
+                    onPressed: (){
+                      Navigator.of(context).pop();
+                    },
+                    color: Color(0xFF2C51BE),
+                    radius: BorderRadius.circular(5.0),
+                  ),
+                ]
+            ).show();
+          } else {
+           
+          }
+        }
+      });
+    } catch (e) {
+      _progressDialog.dismissProgressDialog(context);
+      progressDialog = false;
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context1) => OKDialogBox(
+            title: 'Check your internet connections and settings !',
+            description: "",
+            my_context: context,
+          ));
+    }
+    return responseInternet;
+  }
+
+
+
 
   Future getData() async {
     Map map = {"mobile_no": widget.Phone, "first_name": widget.Name, "last_name": widget.LastName, "email": widget.Email};

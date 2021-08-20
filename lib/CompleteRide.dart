@@ -81,16 +81,12 @@ class CompletedRideState extends State<CompletedRide> {
     SOURCE_LOCATIONT = LatLng(widget.model.startLatt, widget.model.startLng);
     DEST_LOCATIONT = LatLng(widget.model.dropLatt, widget.model.dropLng);
 
-    
     setMap();
   }
 
-  
-  setMap(){
-
-    LatLng _center =  LatLng(widget.model.startLatt, widget.model.startLng);
-_lastMapPosition = _center;
-
+  setMap() {
+    LatLng _center = LatLng(widget.model.startLatt, widget.model.startLng);
+    _lastMapPosition = _center;
 
     if (progressDialog == false) {
       progressDialog = true;
@@ -105,13 +101,8 @@ _lastMapPosition = _center;
 
       setState(() {});
     });
-
-    
-    
   }
-  
-  
-  
+
   String myCurrentAddressPlace = "";
   String myCurrentAddress = "";
 
@@ -136,6 +127,7 @@ _lastMapPosition = _center;
       },
     );
   }
+
   getCurrentLocation() async {
     var location = new Location();
 
@@ -163,38 +155,34 @@ _lastMapPosition = _center;
       throw 'Could not launch $url';
     }
   }
-  
+
   @override
   void dispose() {
     // TODO: implement dispose
-    
-    if(_timer!=null){
+
+    if (_timer != null) {
       _timer.cancel();
     }
-    
+
     super.dispose();
   }
-  LatLng _lastMapPosition;
 
+  LatLng _lastMapPosition;
 
   void _onCameraMove(CameraPosition position) {
     _lastMapPosition = position.target;
   }
+
   GoogleMapController _controller;
   bool status = false;
   bool flagRefreshed = false;
 
- 
-
-
   Widget mapWidget() {
-
-
     CameraPosition initialLocation = CameraPosition(zoom: 4.0, bearing: CAMERA_BEARING, tilt: CAMERA_TILT, target: LatLng(widget.model.startLatt, widget.model.startLng));
 
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height * 0.75,
+      height: MediaQuery.of(context).size.height * 0.7,
       child: GoogleMap(
         myLocationEnabled: true,
         compassEnabled: true,
@@ -210,32 +198,27 @@ _lastMapPosition = _center;
           setPolylines();
           Future.delayed(Duration(milliseconds: 800), () async {
             await updateCameraLocation(SOURCE_LOCATIONT, DEST_LOCATIONT, controller);
-
           });
         },
       ),
     );
   }
+
   Future<void> updateCameraLocation(
-      LatLng source,
-      LatLng destination,
-      GoogleMapController mapController,
-      ) async {
+    LatLng source,
+    LatLng destination,
+    GoogleMapController mapController,
+  ) async {
     if (mapController == null) return;
 
     LatLngBounds bounds;
 
-    if (source.latitude > destination.latitude &&
-        source.longitude > destination.longitude) {
+    if (source.latitude > destination.latitude && source.longitude > destination.longitude) {
       bounds = LatLngBounds(southwest: destination, northeast: source);
     } else if (source.longitude > destination.longitude) {
-      bounds = LatLngBounds(
-          southwest: LatLng(source.latitude, destination.longitude),
-          northeast: LatLng(destination.latitude, source.longitude));
+      bounds = LatLngBounds(southwest: LatLng(source.latitude, destination.longitude), northeast: LatLng(destination.latitude, source.longitude));
     } else if (source.latitude > destination.latitude) {
-      bounds = LatLngBounds(
-          southwest: LatLng(destination.latitude, source.longitude),
-          northeast: LatLng(source.latitude, destination.longitude));
+      bounds = LatLngBounds(southwest: LatLng(destination.latitude, source.longitude), northeast: LatLng(source.latitude, destination.longitude));
     } else {
       bounds = LatLngBounds(southwest: source, northeast: destination);
     }
@@ -244,8 +227,8 @@ _lastMapPosition = _center;
 
     return checkCameraLocation(cameraUpdate, mapController);
   }
-  Future<void> checkCameraLocation(
-      CameraUpdate cameraUpdate, GoogleMapController mapController) async {
+
+  Future<void> checkCameraLocation(CameraUpdate cameraUpdate, GoogleMapController mapController) async {
     mapController.animateCamera(cameraUpdate);
     LatLngBounds l1 = await mapController.getVisibleRegion();
     LatLngBounds l2 = await mapController.getVisibleRegion();
@@ -254,13 +237,13 @@ _lastMapPosition = _center;
       return checkCameraLocation(cameraUpdate, mapController);
     }
   }
+
   void setMapPins() {
     _markers.add(Marker(markerId: MarkerId('sourcePin'), position: LatLng(widget.model.startLatt, widget.model.startLng), icon: sourceIcon));
     // destination pin
     _markers.add(Marker(markerId: MarkerId('destPin'), position: LatLng(widget.model.dropLatt, widget.model.dropLng), icon: destinationIcon));
     setState(() {
       // source pin
-      
     });
   }
 
@@ -288,9 +271,7 @@ _lastMapPosition = _center;
     // to the polyline set, which will eventually
     // end up showing up on the map
     _polylines.add(polyline);
-    setState(() {
-      
-    });
+    setState(() {});
   }
 
   @override
@@ -300,193 +281,191 @@ _lastMapPosition = _center;
       body: Container(
         height: MediaQuery.of(context).size.height,
         width: MediaQuery.of(context).size.width,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                margin: const EdgeInsets.only(left: 0, right: 0, top: 20, bottom: 10),
-                child: Column(
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        IconButton(
-                            icon: Image(
-                              image: AssetImage("Assets/back.png"),
+        child: Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(left: 0, right: 0, top: 20, bottom: 10),
+              child: Column(
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      IconButton(
+                          icon: Image(
+                            image: AssetImage("Assets/back.png"),
+                            color: Colors.black,
+                            height: 40,
+                            width: 40,
+                          ),
+                          color: Colors.white,
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          }),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          var url =
+                              'https://www.google.com/maps/dir/?api=1&origin=${widget.model.startLatt.toString()},${widget.model.startLng.toString()}&destination=${widget.model.dropLatt.toString()},${widget.model.dropLng.toString()}&travelmode=driving&dir_action=navigate';
+                          _launchURL(url);
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Image(
+                              image: AssetImage("Assets/arrow.png"),
                               color: Colors.black,
                               height: 40,
                               width: 40,
                             ),
-                            color: Colors.white,
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            }),
-                        SizedBox(
-                          width: 10,
-                        ),
-                        InkWell(
-                          onTap: () {
-                            var url =
-                                'https://www.google.com/maps/dir/?api=1&origin=${widget.model.startLatt.toString()},${widget.model.startLng.toString()}&destination=${widget.model.dropLatt.toString()},${widget.model.dropLng.toString()}&travelmode=driving&dir_action=navigate';
-                            _launchURL(url);
-                          },
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Image(
-                                image: AssetImage("Assets/arrow.png"),
-                                color: Colors.black,
-                                height: 40,
-                                width: 40,
-                              ),
-                              SizedBox(
-                                height: 8,
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(left: 0),
-                                child: Text(
-                                  "${widget.model.km} KM",
-                                  style: TextStyle(color: Colors.grey, fontSize: 15),
-                                  textAlign: TextAlign.start,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(width: 20),
-                        InkWell(
-                            onTap: () {
-                              var url =
-                                  'https://www.google.com/maps/dir/?api=1&origin=${widget.model.startLatt.toString()},${widget.model.startLng.toString()}&destination=${widget.model.dropLatt.toString()},${widget.model.dropLng.toString()}&travelmode=driving&dir_action=navigate';
-                              _launchURL(url);
-                            },
-                            child: Container(
-                              width: MediaQuery.of(context).size.width * 0.6,
-                              child: Text(
-                                widget.model.dropShortAddress,
-                                style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w500),
-                              ),
-                            ))
-                      ],
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: Row(
-                        children: [
-                          Container(
-                            height: 15,
-                            width: 15,
-                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(7.5), color: Colors.green),
-                          ),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Container(
-                              width: MediaQuery.of(context).size.width - 120,
-                              child: Text(
-                                widget.model.dropAddress,
-                                maxLines: 3,
-                                overflow: TextOverflow.ellipsis,
-                              )),
-                        ],
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              Stack(
-                children: [
-                  Center(child: flagRefreshed ? mapWidget() : SizedBox()),
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 150,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(5),
-                        color: Colors.white,
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              widget.model.dropShortAddress,
-                              style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300, fontSize: 16),
-                            ),
                             SizedBox(
-                              height: 20,
+                              height: 8,
                             ),
-                            Container(
-                              color: Colors.grey,
-                              height: 1,
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Container(
-                              // width: MediaQuery.of(context).size.width ,
-                              height: 50,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5),
-                                color: Colors.deepOrangeAccent,
-                              ),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(left: 10),
-                                    child: Icon(
-                                      Icons.double_arrow_sharp,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  InkWell(
-                                    child: Text(
-                                      "Complete Trip".toUpperCase(),
-                                      style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w500),
-                                    ),
-                                    onTap: () {
-                                      //_showBottomView(context);
-
-                                      sendOtp();
-                                    },
-                                  )
-                                ],
+                            Padding(
+                              padding: EdgeInsets.only(left: 0),
+                              child: Text(
+                                "${widget.model.km} KM",
+                                style: TextStyle(color: Colors.grey, fontSize: 15),
+                                textAlign: TextAlign.start,
                               ),
                             ),
                           ],
                         ),
                       ),
-                    ),
+                      SizedBox(width: 20),
+                      InkWell(
+                          onTap: () {
+                            var url =
+                                'https://www.google.com/maps/dir/?api=1&origin=${widget.model.startLatt.toString()},${widget.model.startLng.toString()}&destination=${widget.model.dropLatt.toString()},${widget.model.dropLng.toString()}&travelmode=driving&dir_action=navigate';
+                            _launchURL(url);
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width * 0.6,
+                            child: Text(
+                              widget.model.dropShortAddress,
+                              style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.w500),
+                            ),
+                          ))
+                    ],
                   ),
-                  Positioned(
-                    right: 20,
-                    bottom: 170,
-                    child: FloatingActionButton(
-                        backgroundColor: Colors.white60,
-                        child: Icon(
-                          Icons.shield,
-                          color: Colors.black,
+                  SizedBox(
+                    height: 10,
+                  ),
+                  SizedBox(
+                    height: 10,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Row(
+                      children: [
+                        Container(
+                          height: 15,
+                          width: 15,
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(7.5), color: Colors.green),
                         ),
-                        onPressed: () {
-                          _showBottomView(context);
-                        }),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Container(
+                            width: MediaQuery.of(context).size.width - 120,
+                            child: Text(
+                              widget.model.dropAddress,
+                              maxLines: 3,
+                              overflow: TextOverflow.ellipsis,
+                            )),
+                      ],
+                    ),
                   )
                 ],
               ),
-            ],
-          ),
+            ),
+            Stack(
+              children: [
+                Center(child: flagRefreshed ? mapWidget() : SizedBox()),
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: 150,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                      color: Colors.white,
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            widget.model.dropShortAddress,
+                            style: TextStyle(color: Colors.black, fontWeight: FontWeight.w300, fontSize: 16),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            color: Colors.grey,
+                            height: 1,
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Container(
+                            // width: MediaQuery.of(context).size.width ,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: Colors.deepOrangeAccent,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 10),
+                                  child: Icon(
+                                    Icons.double_arrow_sharp,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                InkWell(
+                                  child: Text(
+                                    "Complete Trip".toUpperCase(),
+                                    style: TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w500),
+                                  ),
+                                  onTap: () {
+                                    //_showBottomView(context);
+
+                                    sendOtp();
+                                  },
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  right: 20,
+                  bottom: 170,
+                  child: FloatingActionButton(
+                      backgroundColor: Colors.white60,
+                      child: Icon(
+                        Icons.shield,
+                        color: Colors.black,
+                      ),
+                      onPressed: () {
+                        _showBottomView(context);
+                      }),
+                )
+              ],
+            ),
+          ],
         ),
       ),
     ));
@@ -1090,6 +1069,7 @@ _lastMapPosition = _center;
                             ),
                             InkWell(
                               onTap: () {
+                                print(otp);
                                 if (otp == _pinPutController.text) {
                                   Navigator.pop(context1);
                                   verifyOTP();
@@ -1337,7 +1317,6 @@ _lastMapPosition = _center;
                                 child: TextButton(
                                     onPressed: () {
                                       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SharingSettingEmergencyContact()));
-
                                     },
                                     child: Text(
                                       "Change sharing settings.",

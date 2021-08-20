@@ -2,21 +2,21 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:kinga/BikeDetailScreen.dart';
+import 'package:kinga/BikePhotoReqScreen.dart';
 import 'package:kinga/PersnolDetail.dart';
-import 'package:kinga/PhotoReqScreen.dart';
 import 'package:kinga/Utils/global.dart';
 
-class SurePhotoScreen extends StatefulWidget {
+class SureBikePhotoScreen extends StatefulWidget {
   File profileImage ;
   bool isFileUploaded;
 
-  SurePhotoScreen({this.profileImage, this.isFileUploaded});
+  SureBikePhotoScreen({this.profileImage, this.isFileUploaded});
 
   @override
   _SurePhotoScreenState createState() => _SurePhotoScreenState();
 }
 
-class _SurePhotoScreenState extends State<SurePhotoScreen> {
+class _SurePhotoScreenState extends State<SureBikePhotoScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -99,7 +99,7 @@ class _SurePhotoScreenState extends State<SurePhotoScreen> {
 
                               Navigator.pushReplacement(
                                 context,
-                                MaterialPageRoute(builder: (context) => PhotoReqScreen()),
+                                MaterialPageRoute(builder: (context) => BikePhotoReqScreen()),
                               );
                               
                              // Navigator.of(context).pop();
